@@ -90,8 +90,8 @@
                 <div class="section-header">
                     <h2><i class="fas fa-list-check"></i> Pemesanan Terbaru</h2>
                     <div class="section-actions">
-                        <a href="{{ route('owner.kamar.index') }}" class="btn btn-secondary btn-sm"><i
-                                class="fas fa-list"></i> Lihat Kamar Saya</a>
+                        <a href="{{ route('owner.bookings.index') }}" class="btn btn-secondary btn-sm"><i
+                                class="fas fa-list"></i> Lihat Semua Pesanan</a>
                     </div>
                 </div>
 
@@ -105,6 +105,7 @@
                                 <th>Check-In</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
+                                <th width="120">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,18 +125,39 @@
                                     <td>
                                         @if($booking->status === 'pending')
                                             <span class="badge badge-warning">Menunggu</span>
+                                        @elseif($booking->status === 'paid')
+                                            <span class="badge badge-info">Dibayar</span>
                                         @elseif($booking->status === 'confirmed')
-                                            <span class="badge badge-info">Dikonfirmasi</span>
+                                            <span class="badge badge-success">Dikonfirmasi</span>
                                         @elseif($booking->status === 'completed')
                                             <span class="badge badge-success">Selesai</span>
+                                        @elseif($booking->status === 'cancelled')
+                                            <span class="badge badge-danger">Dibatalkan</span>
                                         @else
-                                            <span class="badge badge-danger">{{ ucfirst($booking->status) }}</span>
+                                            <span class="badge badge-secondary">{{ ucfirst($booking->status) }}</span>
                                         @endif
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ route('owner.bookings.index') }}" class="btn btn-outline-primary" title="Kelola">
+                                                <i class="fas fa-cog"></i>
+                                            </a>
+                                            @if($booking->status === 'pending' || $booking->status === 'paid')
+                                                <form action="{{ route('owner.bookings.updateStatus', $booking->id) }}" method="POST" style="display: inline;">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="hidden" name="status" value="confirmed">
+                                                    <button type="submit" class="btn btn-outline-success btn-sm" title="Konfirmasi" onclick="return confirm('Konfirmasi pemesanan ini?')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                         <p class="text-muted"><i class="fas fa-inbox"></i> Tidak ada pemesanan</p>
                                     </td>
                                 </tr>
