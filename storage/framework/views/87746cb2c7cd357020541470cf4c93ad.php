@@ -90,8 +90,8 @@
                 <div class="section-header">
                     <h2><i class="fas fa-list-check"></i> Pemesanan Terbaru</h2>
                     <div class="section-actions">
-                        <a href="<?php echo e(route('owner.kamar.index')); ?>" class="btn btn-secondary btn-sm"><i
-                                class="fas fa-list"></i> Lihat Kamar Saya</a>
+                        <a href="<?php echo e(route('owner.bookings.index')); ?>" class="btn btn-secondary btn-sm"><i
+                                class="fas fa-list"></i> Lihat Semua Pesanan</a>
                     </div>
                 </div>
 
@@ -105,6 +105,7 @@
                                 <th>Check-In</th>
                                 <th>Total Harga</th>
                                 <th>Status</th>
+                                <th width="120">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,18 +125,39 @@
                                     <td>
                                         <?php if($booking->status === 'pending'): ?>
                                             <span class="badge badge-warning">Menunggu</span>
+                                        <?php elseif($booking->status === 'paid'): ?>
+                                            <span class="badge badge-info">Dibayar</span>
                                         <?php elseif($booking->status === 'confirmed'): ?>
-                                            <span class="badge badge-info">Dikonfirmasi</span>
+                                            <span class="badge badge-success">Dikonfirmasi</span>
                                         <?php elseif($booking->status === 'completed'): ?>
                                             <span class="badge badge-success">Selesai</span>
+                                        <?php elseif($booking->status === 'cancelled'): ?>
+                                            <span class="badge badge-danger">Dibatalkan</span>
                                         <?php else: ?>
-                                            <span class="badge badge-danger"><?php echo e(ucfirst($booking->status)); ?></span>
+                                            <span class="badge badge-secondary"><?php echo e(ucfirst($booking->status)); ?></span>
                                         <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="<?php echo e(route('owner.bookings.index')); ?>" class="btn btn-outline-primary" title="Kelola">
+                                                <i class="fas fa-cog"></i>
+                                            </a>
+                                            <?php if($booking->status === 'pending' || $booking->status === 'paid'): ?>
+                                                <form action="<?php echo e(route('owner.bookings.updateStatus', $booking->id)); ?>" method="POST" style="display: inline;">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('PUT'); ?>
+                                                    <input type="hidden" name="status" value="confirmed">
+                                                    <button type="submit" class="btn btn-outline-success btn-sm" title="Konfirmasi" onclick="return confirm('Konfirmasi pemesanan ini?')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">
+                                    <td colspan="7" class="text-center py-4">
                                         <p class="text-muted"><i class="fas fa-inbox"></i> Tidak ada pemesanan</p>
                                     </td>
                                 </tr>
