@@ -1,0 +1,1 @@
+["web","App\\Http\\Middleware\\Authenticate","App\\Http\\Middleware\\AdminMiddleware","auth"]

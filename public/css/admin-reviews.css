@@ -1,0 +1,17 @@
+/* Admin Reviews Page Styles */
+
+.table-admin thead tr th {
+    color: white;
+}
+
+.admin-section {
+    padding: 25px;
+}
+
+.admin-section form {
+    margin-bottom: 30px;
+}
+
+.admin-section form.edit-form {
+    max-width: 600px;
+}

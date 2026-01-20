@@ -1,0 +1,329 @@
+PANDUAN SETUP ADAKAMAR STEP-BY-STEP
+====================================
+
+## PERSIAPAN
+
+### Requirement:
+- PHP 8.1 atau lebih tinggi
+- MySQL 5.7 atau lebih tinggi
+- Composer (PHP Package Manager)
+- Web Server (Apache - disediakan XAMPP)
+
+---
+
+## LANGKAH 1: INSTALASI DEPENDENCIES
+
+1. Buka Command Prompt/PowerShell di folder C:\xampp\htdocs\adakamar
+2. Jalankan perintah:
+
+   composer install
+
+   Tunggu hingga selesai (ini akan download semua package Laravel dan dependencies)
+
+---
+
+## LANGKAH 2: SETUP ENVIRONMENT VARIABLES
+
+File .env sudah tersedia di workspace Anda.
+Periksa konfigurasi berikut:
+
+### Database Configuration:
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=adakamar
+DB_USERNAME=root
+DB_PASSWORD=
+
+### Catatan:
+- DB_HOST: localhost atau 127.0.0.1
+- DB_USERNAME: root (default XAMPP)
+- DB_PASSWORD: kosong (default XAMPP) atau sesuai konfigurasi Anda
+- DB_DATABASE: adakamar (akan dibuat otomatis)
+
+---
+
+## LANGKAH 3: CREATE DATABASE
+
+1. Buka phpMyAdmin: http://localhost/phpmyadmin
+2. Login dengan username: root
+3. Buat database baru dengan nama: adakamar
+   - Klik "New" di sidebar kiri
+   - Masukkan nama: adakamar
+   - Collation: utf8mb4_unicode_ci
+   - Klik "Create"
+
+---
+
+## LANGKAH 4: GENERATE APPLICATION KEY
+
+Buka Command Prompt di folder C:\xampp\htdocs\adakamar dan jalankan:
+
+   php artisan key:generate
+
+Output yang benar:
+   Application key set successfully.
+
+---
+
+## LANGKAH 5: JALANKAN MIGRATIONS
+
+Migrations akan membuat table-table di database.
+
+   php artisan migrate
+
+Output yang benar:
+   Migration table created successfully.
+   Migrated: 2024_01_01_000001_create_users_table
+   Migrated: 2024_01_01_000002_create_homestays_table
+   Migrated: 2024_01_01_000003_create_bookings_table
+   Migrated: 2024_01_01_000004_create_reviews_table
+
+---
+
+## LANGKAH 6: JALANKAN SEEDERS (Optional)
+
+Seeders akan membuat data dummy untuk testing:
+
+   php artisan db:seed
+
+Ini akan membuat:
+- 1 Admin user
+- 1 Owner user
+- 1 Customer user
+- 3 Homestay samples
+
+---
+
+## LANGKAH 7: JALANKAN DEVELOPMENT SERVER
+
+   php artisan serve
+
+Output yang benar:
+   Laravel development server started: http://127.0.0.1:8000
+
+---
+
+## LANGKAH 8: AKSES APLIKASI
+
+Buka browser dan kunjungi:
+
+   http://localhost:8000
+
+Seharusnya Anda melihat halaman beranda AdaKamar.
+
+---
+
+## TROUBLESHOOTING
+
+### Error: SQLSTATE[HY000] [2002] No such file or directory
+
+Solusi: MySQL tidak berjalan
+1. Buka XAMPP Control Panel
+2. Klik "Start" untuk MySQL
+
+### Error: Class not found / Autoload error
+
+Solusi: Jalankan
+   composer dump-autoload
+
+### Error: Permission denied (storage/logs, storage/app, etc)
+
+Solusi: Set folder permissions
+   
+   Untuk Windows, folder sudah writable secara default.
+   Jika masih error, coba:
+   - Jalankan Command Prompt as Administrator
+   - Atau ubah folder permissions di Properties
+
+### Error: Key already exists (APP_KEY)
+
+Solusi: APP_KEY sudah ada, skip langkah key:generate
+
+### Error: migrations already exist
+
+Solusi: Database sudah ada, refresh database:
+
+   php artisan migrate:refresh --seed
+
+   PERINGATAN: Ini akan menghapus semua data!
+
+---
+
+## AKUN LOGIN DEFAULT
+
+Setelah menjalankan seeders, gunakan akun berikut:
+
+### ADMIN
+Email: admin@adakamar.id
+Password: password123
+Akses: Semua fitur admin
+
+### OWNER
+Email: owner@adakamar.id
+Password: password123
+Akses: Kelola homestay sendiri
+
+### CUSTOMER
+Email: customer@adakamar.id
+Password: password123
+Akses: Browse dan booking homestay
+
+---
+
+## FILE PENTING YANG PERLU DIKETAHUI
+
+### Konfigurasi:
+- .env - Environment variables
+- config/app.php - Konfigurasi aplikasi
+- config/database.php - Konfigurasi database
+
+### Routes:
+- routes/web.php - Semua URL routes
+
+### Controllers:
+- app/Http/Controllers/ - Business logic
+
+### Models:
+- app/Models/ - Database models
+
+### Views:
+- resources/views/ - Template HTML
+
+### Database:
+- database/migrations/ - Schema database
+- database/seeders/ - Data dummy
+
+---
+
+## PERINTAH ARTISAN YANG BERGUNA
+
+Lihat semua routes:
+   php artisan route:list
+
+Lihat database:
+   php artisan tinker
+   > User::all()
+
+Generate controller baru:
+   php artisan make:controller NamaController
+
+Generate model baru:
+   php artisan make:model NamaModel
+
+Generate migration baru:
+   php artisan make:migration create_nama_table
+
+Refresh database (WARNING: DELETE ALL DATA!):
+   php artisan migrate:refresh --seed
+
+Clear cache:
+   php artisan cache:clear
+   php artisan config:clear
+
+---
+
+## STRUKTUR FOLDER YANG DIHASILKAN
+
+adakamar/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/     (HomeController, HomestayController, etc)
+│   │   └── Middleware/      (AdminMiddleware, Authenticate, etc)
+│   ├── Models/              (User, Homestay, Booking, Review)
+│   ├── Exceptions/
+│   └── Providers/
+├── database/
+│   ├── migrations/          (create_users_table, etc)
+│   └── seeders/             (DatabaseSeeder)
+├── resources/
+│   ├── views/
+│   │   ├── layouts/         (app.blade.php)
+│   │   ├── pages/           (home, homestays)
+│   │   ├── admin/           (dashboard, homestays, bookings)
+│   │   ├── auth/            (login, register)
+│   │   ├── booking/         (create, confirmation)
+│   │   └── homestay/        (detail)
+│   ├── css/
+│   └── js/
+├── public/
+│   ├── css/                 (style.css)
+│   ├── js/                  (script.js)
+│   └── images/
+├── routes/
+│   └── web.php              (Semua routes)
+├── config/
+│   ├── app.php
+│   └── database.php
+├── .env                     (Environment variables)
+├── README.md                (Dokumentasi)
+└── DEVELOPMENT.md           (Panduan development)
+
+---
+
+## TESTING APLIKASI
+
+### Test Login
+1. Kunjungi: http://localhost:8000/login
+2. Gunakan akun: admin@adakamar.id / password123
+3. Seharusnya redirect ke dashboard
+
+### Test Register
+1. Kunjungi: http://localhost:8000/register
+2. Isi form dengan data baru
+3. Seharusnya berhasil register dan redirect ke login
+
+### Test Browse Homestay
+1. Kunjungi: http://localhost:8000/homestays
+2. Seharusnya melihat daftar homestay
+3. Klik salah satu untuk lihat detail
+
+### Test Booking
+1. Login sebagai customer
+2. Kunjungi: http://localhost:8000/homestays
+3. Pilih homestay dan klik "Pesan Sekarang"
+4. Isi form booking
+5. Seharusnya berhasil booking
+
+---
+
+## TIPS PENGEMBANGAN
+
+1. Selalu buka Command Prompt dengan Administrator (jika ada permission issue)
+
+2. Jika port 8000 sudah terpakai, gunakan:
+   php artisan serve --port=8001
+
+3. Untuk development lebih cepat, gunakan:
+   php artisan serve --host=0.0.0.0
+
+4. Monitor database dengan phpMyAdmin:
+   http://localhost/phpmyadmin
+
+5. Debug dengan:
+   dd($variable) - di code PHP
+   console.log() - di JavaScript
+
+6. Baca error message dengan teliti, biasanya sudah menunjukkan solusi
+
+---
+
+## LANGKAH BERIKUTNYA (DEVELOPMENT)
+
+Setelah setup selesai, Anda bisa:
+
+1. Customize tema dengan mengedit CSS
+2. Tambah fitur baru dengan membuat controller baru
+3. Tambah field database dengan membuat migration baru
+4. Deploy ke production
+
+Silakan baca README.md dan DEVELOPMENT.md untuk dokumentasi lebih lengkap.
+
+---
+
+Selamat! Jika semua langkah berhasil, aplikasi AdaKamar sudah siap digunakan.
+
+Hubungi: support@adakamar.id
+Website: https://adakamar.id
+
+Happy coding! 🚀

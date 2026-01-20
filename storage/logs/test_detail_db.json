@@ -1,0 +1,1 @@
+[{"id":1,"owner_id":1,"name":"Test Homestay","description":"Nice place","location":"Testville","price_per_night":350000,"max_guests":4,"bedrooms":2,"bathrooms":1,"image_url":null,"amenities":["WiFi","AC"],"rating":null,"is_active":true,"created_at":"2025-12-16T02:24:12.000000Z","updated_at":"2025-12-16T02:24:12.000000Z","category":"villa","category_id":null,"location_id":null}]

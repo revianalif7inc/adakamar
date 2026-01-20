@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60" height="60" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Main pin shape - bottom point -->
+  <path d="M100 180 L40 100 C20 75 20 50 40 40 C60 20 140 20 160 40 C180 50 180 75 160 100 Z" fill="#F39C12" stroke="#E8860D" stroke-width="2"/>
+  
+  <!-- Decorative circle at top -->
+  <circle cx="100" cy="55" r="45" fill="#F39C12" stroke="#E8860D" stroke-width="2"/>
+  
+  <!-- House/Bed icon -->
+  <g transform="translate(100, 50)">
+    <!-- House outline -->
+    <path d="M -20 5 L -20 18 L 20 18 L 20 5 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+    <polygon points="0,-12 -30,5 30,5" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="1.5"/>
+    
+    <!-- Door -->
+    <rect x="-6" y="8" width="12" height="10" rx="1" fill="#F39C12" opacity="0.4"/>
+    <circle cx="4" cy="13" r="0.8" fill="#F39C12"/>
+    
+    <!-- Window left -->
+    <rect x="-16" y="2" width="8" height="8" rx="0.5" fill="#F39C12" opacity="0.3"/>
+    
+    <!-- Window right -->
+    <rect x="8" y="2" width="8" height="8" rx="0.5" fill="#F39C12" opacity="0.3"/>
+  </g>
+</svg>
