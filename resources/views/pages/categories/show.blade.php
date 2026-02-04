@@ -6,8 +6,9 @@
     <meta name="description"
         content="{{ \Illuminate\Support\Str::limit($category->description ?? ("Kategori " . $category->name), 160) }}">
     <link rel="canonical" href="{{ route('categories.show', $category->slug) }}">
+    <link rel="stylesheet" href="{{ asset('css/categories-show.css') }}">
     <script type="application/ld+json">
-                    {!! json_encode([
+        {!! json_encode([
         "@context" => "https://schema.org",
         "@type" => "CollectionPage",
         "name" => $category->name,
@@ -28,69 +29,121 @@
             })->toArray()
         ]
     ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}
-                </script>
+        </script>
 @endsection
 
 @section('content')
-    <div class="container categories-section categories-show">
-        <div class="section-header">
-            <div>
-                <h1>{{ $category->name }}</h1>
-                @if($category->description)
-                    <p class="text-muted">{{ $category->description }}</p>
-                @endif
-            </div>
-
-
-
-            <div>
-                <a href="{{ route('categories.index') }}" class="btn btn-primary">Kembali ke Semua Kategori</a>
-            </div>
-        </div>
-
-        <div class="kamar-grid">
-            @forelse($homestays as $homestay)
-                <div class="kamar-card">
-                    @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
-                        <img src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}">
-                    @else
-                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder">
-                    @endif
-
-                    <h3 title="{{ $homestay->name }}">{{ \Illuminate\Support\Str::limit($homestay->name, 36) }}</h3>
-                    <p class="location">{{ $homestay->location }}</p>
-                    <div class="card-meta">
-                        <div class="price-pill"><svg width="16" height="16" viewBox="0 0 24 24" class="price-icon"
-                                aria-hidden="true" focusable="false">
-                                <path fill="currentColor"
-                                    d="M12 1c-1.1 0-2 .9-2 2v1.1C7.8 4.2 6 6 6 8v1c0 2 2 2 2 2 .6 0 1.1-.2 1.5-.5.7.4 1.4.9 2.5.9 1.8 0 3-1 3-2.8V8c0-1.9-1.8-3.7-3.9-3.9V3c0-1.1-.9-2-2-2zM6 19v2h12v-2c0-2-3.6-3-6-3s-6 1-6 3z" />
-                            </svg>
-                            @if($homestay->price_per_month)
-                                Rp {{ number_format($homestay->price_per_month, 0, ',', '.') }} / bulan
-                            @elseif($homestay->price_per_year)
-                                Rp {{ number_format($homestay->price_per_year, 0, ',', '.') }} / tahun
-                            @else
-                                Harga belum tersedia
-                            @endif
+    <div class="category-page">
+        <!-- Header -->
+        <div class="category-header">
+            <div class="header-container">
+                <div class="header-wrapper">
+                    <div class="header-top">
+                        <a href="{{ route('categories.index') }}" class="back-link">
+                            <i class="fas fa-chevron-left"></i> Kembali ke Kategori
+                        </a>
+                    </div>
+                    <div class="header-content">
+                        <h1 class="category-title">{{ $category->name }}</h1>
+                        @if($category->description)
+                            <p class="subtitle">{{ $category->description }}</p>
+                        @endif
+                        <div class="header-stats">
+                            <span class="stat"><i class="fas fa-home"></i> {{ $homestays->total() }} unit tersedia</span>
                         </div>
-
-                        <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}"
-                            class="btn btn-primary">Lihat Detail <span class="btn-icon" aria-hidden="true"><svg width="12"
-                                    height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 12h14"></path>
-                                    <path d="M12 5l7 7-7 7"></path>
-                                </svg></span></a>
                     </div>
                 </div>
-            @empty
-                <p>Tidak ada homestay di kategori ini.</p>
-            @endforelse
+            </div>
         </div>
 
-        <div class="mt-4 pagination-wrapper">{{ $homestays->links() }}</div>
+        <!-- Content -->
+        <div class="container-fluid category-container">
+            <div class="homestays-section">
+                @if($homestays->count() > 0)
+                    <div class="homestays-grid">
+                        @foreach($homestays as $homestay)
+                            <div class="kamar-card" data-id="{{ $homestay->id }}">
+                                <!-- Image -->
+                                <div class="card-image-wrapper">
+                                    @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
+                                        <img src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}"
+                                            class="card-image" loading="lazy">
+                                    @else
+                                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder" class="card-image">
+                                    @endif
+                                    <div class="card-overlay"></div>
+                                </div>
+
+                                <!-- Content -->
+                                <div class="card-content">
+                                    <div class="card-header">
+                                        <h3 class="card-title" title="{{ $homestay->name }}">
+                                            {{ \Illuminate\Support\Str::limit($homestay->name, 45) }}</h3>
+                                        @if($homestay->rating && $homestay->rating > 0)
+                                            <div class="card-rating-badge">
+                                                <span class="rating-value">★ {{ number_format($homestay->rating, 1) }}</span>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <p class="card-location"><i class="fas fa-map-marker-alt"></i>
+                                        {{ $homestay->location ?? 'Lokasi tidak tersedia' }}</p>
+                                    <p class="card-description">{{ \Illuminate\Support\Str::limit($homestay->description, 85) }}</p>
+
+                                    <!-- Features -->
+                                    <div class="card-features">
+                                        @if($homestay->bedrooms)
+                                            <span class="feature-badge"><i class="fas fa-bed"></i> {{ $homestay->bedrooms }}</span>
+                                        @endif
+                                        @if($homestay->bathrooms)
+                                            <span class="feature-badge"><i class="fas fa-bath"></i> {{ $homestay->bathrooms }}</span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Pricing -->
+                                    <div class="card-pricing">
+                                        @if($homestay->price_per_month)
+                                            <span class="price-badge primary">Rp
+                                                {{ number_format($homestay->price_per_month, 0, ',', '.') }}/bln</span>
+                                        @elseif($homestay->price_per_year)
+                                            <span class="price-badge primary">Rp
+                                                {{ number_format($homestay->price_per_year, 0, ',', '.') }}/thn</span>
+                                        @else
+                                            <span class="price-badge secondary">Hubungi Pemilik</span>
+                                        @endif
+                                    </div>
+
+                                    <!-- Actions -->
+                                    <div class="card-actions">
+                                        <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}"
+                                            class="btn btn-view-detail">
+                                            <span>Lihat Detail</span> <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <!-- Pagination -->
+                    @if($homestays->hasPages())
+                        <div class="pagination-wrapper">
+                            {{ $homestays->links() }}
+                        </div>
+                    @endif
+                @else
+                    <div class="no-results">
+                        <div class="no-results-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Tidak Ada Kamar Ditemukan</h3>
+                        <p>Mohon maaf, kategori ini belum memiliki unit yang tersedia.</p>
+                        <a href="{{ route('kamar.index') }}" class="btn btn-back-explore">
+                            <i class="fas fa-arrow-left"></i> Jelajahi Kategori Lain
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
-
-
-
 @endsection

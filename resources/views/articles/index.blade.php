@@ -1,58 +1,77 @@
 @extends('layouts.app')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/articles.css') }}">
+@endsection
+
 @section('content')
-    <div class="container py-4">
-        @if(isset($category))
-            <h1 class="mb-4">Kategori: {{ $category->name }}</h1>
-            @if($category->description)
-                <p class="text-muted">{{ $category->description }}</p>
-            @endif
-        @else
-            <h1 class="mb-4">Artikel</h1>
-        @endif
-
-        @php $hasArticleCategories = \Illuminate\Support\Facades\Schema::hasTable('article_categories'); @endphp
-        @if($hasArticleCategories)
-            <div class="d-block d-md-none mb-3">
-                <select id="mobileArticleCategorySelect" class="form-select">
-                    <option value="">Semua Kategori</option>
-                    @foreach(\App\Models\ArticleCategory::orderBy('name','asc')->get() as $cat)
-                        <option value="{{ $cat->slug }}" {{ isset($category) && $category->id == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                    @endforeach
-                </select>
+    <div class="articles-page">
+        <!-- Header -->
+        <div class="articles-header">
+            <div class="articles-header-content">
+                <h1>Artikel & Berita</h1>
+                <p class="subtitle">Panduan, tips, dan informasi seputar kost dan homestay terpercaya</p>
             </div>
-        @endif
+        </div>
 
-        <div class="row">
-            <div class="col-lg-8">
-                @if($articles->count())
-                    <div class="row">
-                        @foreach($articles as $article)
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100 shadow-sm">
+        <!-- Content -->
+        <div class="articles-container">
+            <div class="row">
+                <div class="col-lg-9">
+                    @if($articles->count())
+                        <div class="articles-grid">
+                            @foreach($articles as $article)
+                                <div class="article-card">
                                     @if($article->image)
-                                        <img src="{{ asset('storage/' . $article->image) }}" class="card-img-top article-card-img" alt="{{ $article->title }}">
+                                        <img src="{{ asset('storage/' . $article->image) }}" class="article-card-image"
+                                            alt="{{ $article->title }}">
+                                    @else
+                                        <div class="article-card-image"></div>
                                     @endif
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ $article->title }}</h5>
-                                        <p class="card-text text-muted small">
-                                            {{ $article->published_at ? \Illuminate\Support\Carbon::parse($article->published_at)->format('d M Y') : '' }}</p>
-                                        <p class="card-text">{{ Str::limit($article->excerpt ?? strip_tags($article->body), 150) }}</p>
-                                        <a href="{{ route('artikel.show', $article) }}" class="btn btn-primary">Baca Selengkapnya</a>
+
+                                    <div class="article-card-body">
+                                        @if($article->categories && $article->categories->count())
+                                            @foreach($article->categories->take(1) as $cat)
+                                                <span class="article-card-category">{{ $cat->name }}</span>
+                                            @endforeach
+                                        @endif
+
+                                        <h3 class="article-card-title">{{ $article->title }}</h3>
+
+                                        <p class="article-card-excerpt">
+                                            {{ Str::limit($article->excerpt ?? strip_tags($article->body), 120) }}
+                                        </p>
+
+                                        <div class="article-card-meta" style="margin-top: auto;">
+                                            <i class="fas fa-calendar"></i>
+                                            <span>{{ $article->published_at ? \Carbon\Carbon::parse($article->published_at)->format('d M Y') : 'Belum dipublikasi' }}</span>
+                                        </div>
+
+                                        <a href="{{ route('artikel.show', $article) }}" class="article-card-link">
+                                            Baca Selengkapnya <i class="fas fa-arrow-right"></i>
+                                        </a>
                                     </div>
                                 </div>
-                            </div>
-                        @endforeach
+                            @endforeach
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="d-flex justify-content-center">
+                            {{ $articles->links('pagination::bootstrap-5') }}
+                        </div>
+                    @else
+                        <div style="text-align: center; padding: 40px; background: white; border-radius: 10px;">
+                            <i class="fas fa-newspaper" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
+                            <p style="color: #666; font-size: 1.1rem;">Belum ada artikel yang dipublikasikan</p>
+                        </div>
+                    @endif
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="articles-sidebar">
+                        @include('articles._widgets')
                     </div>
-
-                    {{ $articles->links() }}
-                @else
-                    <p>Tidak ada artikel dipublikasikan.</p>
-                @endif
-            </div>
-
-            <div class="col-lg-4">
-                @include('articles._widgets')
+                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,66 @@
 // Global JavaScript functions
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Sticky navbar on scroll - both header-top and header-inner
+    const siteHeader = document.querySelector('.site-header');
+    const headerTop = document.querySelector('.header-top');
+    const headerInner = document.querySelector('.header-inner');
+    
+    if (siteHeader && headerTop && headerInner) {
+        let isFixed = false;
+        
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const headerTopHeight = headerTop.offsetHeight;
+            const headerInnerHeight = headerInner.offsetHeight;
+            const totalHeaderHeight = headerTopHeight + headerInnerHeight;
+            
+            if (scrollTop >= headerTopHeight && !isFixed) {
+                // Apply fixed positioning to entire site-header
+                siteHeader.style.position = 'fixed';
+                siteHeader.style.top = '0';
+                siteHeader.style.left = '0';
+                siteHeader.style.right = '0';
+                siteHeader.style.width = '100%';
+                siteHeader.style.zIndex = '1050';
+                siteHeader.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.3)';
+                
+                // Add sticky class for CSS animations
+                siteHeader.classList.add('is-sticky');
+                
+                // Add margin to main content only if there's no full-width header (category-page, etc)
+                const mainContent = document.querySelector('main.main-content');
+                const categoryPage = document.querySelector('.category-page');
+                
+                if (mainContent && !categoryPage) {
+                    mainContent.style.marginTop = totalHeaderHeight + 'px';
+                }
+                
+                isFixed = true;
+            } else if (scrollTop < headerTopHeight && isFixed) {
+                // Reset to static positioning
+                siteHeader.style.position = '';
+                siteHeader.style.top = '';
+                siteHeader.style.left = '';
+                siteHeader.style.right = '';
+                siteHeader.style.width = '';
+                siteHeader.style.zIndex = '1050';
+                siteHeader.style.boxShadow = '';
+                
+                // Remove sticky class
+                siteHeader.classList.remove('is-sticky');
+                
+                // Remove margin from main content
+                const mainContent = document.querySelector('main.main-content');
+                if (mainContent) {
+                    mainContent.style.marginTop = '';
+                }
+                
+                isFixed = false;
+            }
+        });
+    }
+
     // Add smooth scroll behavior
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -16,12 +76,62 @@ document.addEventListener('DOMContentLoaded', function() {
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {
+            // Special validation for home search form
+            if (this.id === 'homeSearchForm') {
+                const searchInput = this.querySelector('input[name="search"]');
+                const locationSelect = this.querySelector('select[name="location_id"]');
+                
+                // Allow submission if either search text or location is selected
+                if (searchInput && locationSelect) {
+                    const hasSearch = searchInput.value.trim() !== '';
+                    const hasLocation = locationSelect.value !== '';
+                    
+                    if (!hasSearch && !hasLocation) {
+                        e.preventDefault();
+                        alert('Silakan isi kata kunci pencarian atau pilih lokasi terlebih dahulu');
+                        return false;
+                    }
+                }
+            }
+            
             if (!this.checkValidity()) {
                 e.preventDefault();
                 console.log('Form validation failed');
             }
         });
     });
+
+    // IntersectionObserver to reveal elements with .animate-on-scroll
+    const animatedItems = document.querySelectorAll('.animate-on-scroll');
+    if (animatedItems.length) {
+        // assign index for stagger
+        animatedItems.forEach((el, i) => el.dataset.animIndex = i);
+
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const idx = parseInt(entry.target.dataset.animIndex || 0, 10);
+                        // stagger up to 6 items to avoid long delays
+                        const stagger = (idx % 6) * 70;
+                        setTimeout(() => {
+                            entry.target.classList.add('in-view');
+                            obs.unobserve(entry.target);
+                        }, stagger);
+                    }
+                });
+            }, { threshold: 0.08 });
+
+            animatedItems.forEach(el => io.observe(el));
+        } else {
+            // fallback: reveal all with small stagger
+            animatedItems.forEach((el, i) => setTimeout(() => el.classList.add('in-view'), (i % 6) * 60));
+        }
+    }
+
+    // Ensure hero content appears quickly on load (small delay)
+    const heroLeft = document.querySelector('.hero-left');
+    if (heroLeft && !heroLeft.classList.contains('in-view')) setTimeout(() => heroLeft.classList.add('in-view'), 60);
 });
 
 // Format currency

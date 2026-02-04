@@ -2,13 +2,17 @@
 
 @section('title', 'Manajemen Kamar - Admin')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/kamar-management.css') }}">
+@endsection
+
 @section('content')
     <div class="admin-kamar-list">
         <div class="container">
             <!-- Header -->
             <div class="admin-kamar-header">
                 <div>
-                    <h1>Manajemen Kamar</h1>
+                    <h1><i class="fas fa-door-open"></i> Manajemen Kamar</h1>
                     <p class="text-muted">Kelola semua kamar yang tersedia di platform</p>
                 </div>
                 <a href="{{ route('admin.kamar.create') }}" class="btn btn-primary btn-lg">
@@ -24,13 +28,16 @@
                 </div>
             @endif
 
-            <!-- Kamar List Table -->
+            <!-- Kamar List Grid -->
             <div class="kamar-list-card">
 
                 <div class="filters">
                     <form method="GET" action="{{ route('admin.kamar.index') }}" class="filters-form">
-                        <input type="text" name="q" value="{{ old('q', $q ?? request('q')) }}"
-                            placeholder="Cari nama, lokasi atau deskripsi..." class="form-control" />
+                        <div class="search-input-wrapper">
+                            <input type="text" name="q" value="{{ old('q', $q ?? request('q')) }}"
+                                placeholder="Cari nama, lokasi atau deskripsi..." class="form-control" />
+                            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
 
                         <select name="category" class="form-control">
                             <option value="">Semua Kategori</option>
@@ -52,166 +59,138 @@
                             <option value="inactive" {{ (old('status', $status ?? request('status')) === 'inactive') ? 'selected' : '' }}>Nonaktif</option>
                         </select>
 
-                        <button type="submit" class="btn btn-primary">Cari</button>
-                        <a href="{{ route('admin.kamar.index') }}" class="btn btn-secondary">Reset</a>
+                        <a href="{{ route('admin.kamar.index') }}" class="btn btn-reset"><i class="fas fa-redo"></i>
+                            Reset</a>
 
-                        <div class="ml-auto text-muted">Menampilkan {{ $homestays->total() }} kamar</div>
+                        <div class="filter-info">Total: <strong>{{ $homestays->total() }}</strong> kamar</div>
                     </form>
                 </div>
 
-                <div class="table-responsive-wrapper">
-                    <table class="table table-kamar">
-                        <thead>
-                            <tr>
-                                <th width="200">Nama Kamar</th>
-                                <th width="80">Featured</th>
-                                <th width="120">Kategori</th>
-                                <th width="180">Pemilik</th>
-                                <th width="150">Lokasi</th>
-                                <th width="120">Harga</th>
-                                <th width="80">Kamar</th>
-                                <th width="80">Kapasitas</th>
-                                <th width="80">Rating</th>
-                                <th width="90">Status</th>
-                                <th width="120">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($homestays as $homestay)
-                                <tr>
-                                    <td data-label="Nama Kamar">
-                                        <div class="kamar-name-cell">
-                                            @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
-                                                <a href="{{ asset('storage/' . $homestay->image_url) }}" target="_blank"
-                                                    rel="noopener">
-                                                    <img src="{{ asset('storage/' . $homestay->image_url) }}"
-                                                        alt="{{ $homestay->name }}" class="kamar-thumb-lg">
-                                                </a>
-                                            @else
-                                                <a href="{{ asset('images/homestays/placeholder.svg') }}" target="_blank"
-                                                    rel="noopener">
-                                                    <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder"
-                                                        class="kamar-thumb-lg">
-                                                </a>
-                                            @endif
-                                            <div>
-                                                <p class="kamar-name">{{ $homestay->name }}</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td data-label="Featured">
-                                        @if($homestay->is_featured)
-                                            <span class="badge badge-success">Ya</span>
-                                        @else
-                                            <span class="text-muted">-</span>
-                                        @endif
-                                    </td>
-                                    <td data-label="Kategori">
-                                        <span class="category-badge"
-                                            title="{{ $homestay->categories->pluck('name')->implode(', ') }}">Kost</span>
-                                    </td>
-                                    <td data-label="Pemilik">
-                                        @if($homestay->owner)
-                                            <a
-                                                href="{{ route('admin.users.edit', $homestay->owner->id) }}">{{ $homestay->owner->name }}</a>
-                                            <br><small class="text-muted">{{ $homestay->owner->email }}</small>
-                                        @else
-                                            <small class="text-muted">—</small>
-                                        @endif
-                                    </td>
-                                    <td data-label="Lokasi">
-                                        <small class="text-muted">{{ $homestay->location }}</small>
-                                    </td>
-                                    <td data-label="Harga">
-                                        @if($homestay->price_per_month)
-                                            <strong class="price-display">Rp
-                                                {{ number_format($homestay->price_per_month, 0, ',', '.') }} / bulan</strong>
-                                        @elseif($homestay->price_per_year)
-                                            <strong class="price-display">Rp
-                                                {{ number_format($homestay->price_per_year, 0, ',', '.') }} / tahun</strong>
-                                        @elseif($homestay->price_per_night)
-                                            <strong class="price-display">Rp
-                                                {{ number_format($homestay->price_per_night, 0, ',', '.') }} / malam</strong>
-                                        @else
-                                            <small class="text-muted">Harga belum tersedia</small>
-                                        @endif
-                                    </td>
-                                    <td data-label="Kamar">
-                                        <span class="badge badge-info">{{ $homestay->bedrooms }}</span>
-                                    </td>
-                                    <td data-label="Kapasitas">
-                                        <span class="capacity-badge">{{ $homestay->max_guests }} <i
-                                                class="fas fa-user"></i></span>
-                                    </td>
-                                    <td data-label="Rating">
-                                        <span class="rating-display">
-                                            @if($homestay->rating)
-                                                <i class="fas fa-star rating-star"></i>
-                                                {{ number_format($homestay->rating, 1) }}
-                                            @else
-                                                <span class="text-muted">-</span>
-                                            @endif
-                                        </span>
-                                    </td>
-                                    <td data-label="Status">
+                <div class="kamar-grid-container">
+                    @forelse($homestays as $homestay)
+                        <div class="kamar-card">
+                            <div class="kamar-card-image">
+                                @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
+                                    <img src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}" />
+                                @else
+                                    <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder" />
+                                @endif
+                                <div class="kamar-card-overlay">
+                                    <a href="{{ route('admin.kamar.edit', $homestay->id) }}" class="btn btn-sm btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="kamar-card-content">
+                                <div class="kamar-card-header">
+                                    <h3 class="kamar-card-title">{{ $homestay->name }}</h3>
+                                    <div class="kamar-status-badge">
                                         @if($homestay->is_active)
                                             <span class="badge badge-success"><i class="fas fa-check-circle"></i> Aktif</span>
                                         @else
                                             <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Nonaktif</span>
                                         @endif
-                                    </td>
-                                    <td data-label="Aksi">
-                                        <div class="action-buttons">
-                                            <a href="{{ route('admin.kamar.edit', $homestay->id) }}" class="btn btn-sm btn-edit"
-                                                title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                    </div>
+                                </div>
 
-                                            <form action="{{ route('admin.kamar.toggleFeature', $homestay->id) }}" method="POST"
+                                <div class="kamar-card-info">
+                                    <p class="kamar-location">
+                                        <i class="fas fa-map-marker-alt"></i> {{ $homestay->location }}
+                                    </p>
+
+                                    <div class="kamar-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-value">{{ $homestay->bedrooms }}</span>
+                                            <span class="stat-label">Kamar</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-value">{{ $homestay->max_guests }}</span>
+                                            <span class="stat-label">Kapasitas</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-value">
+                                                @if($homestay->rating)
+                                                    <i class="fas fa-star"></i> {{ number_format($homestay->rating, 1) }}
+                                                @else
+                                                    <span class="text-muted">—</span>
+                                                @endif
+                                            </span>
+                                            <span class="stat-label">Rating</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="kamar-price">
+                                        @if($homestay->price_per_month)
+                                            <span class="price-label">Rp
+                                                {{ number_format($homestay->price_per_month, 0, ',', '.') }}</span>
+                                            <span class="price-period">/ bulan</span>
+                                        @elseif($homestay->price_per_year)
+                                            <span class="price-label">Rp
+                                                {{ number_format($homestay->price_per_year, 0, ',', '.') }}</span>
+                                            <span class="price-period">/ tahun</span>
+                                        @elseif($homestay->price_per_night)
+                                            <span class="price-label">Rp
+                                                {{ number_format($homestay->price_per_night, 0, ',', '.') }}</span>
+                                            <span class="price-period">/ malam</span>
+                                        @else
+                                            <span class="price-label text-muted">Harga belum tersedia</span>
+                                        @endif
+                                    </div>
+
+                                    @if($homestay->owner)
+                                        <div class="kamar-owner">
+                                            <small><strong>{{ $homestay->owner->name }}</strong></small>
+                                            <br><small class="text-muted">{{ $homestay->owner->email }}</small>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="kamar-card-footer">
+                                    <div class="kamar-actions">
+                                        <form action="{{ route('admin.kamar.toggleFeature', $homestay->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit"
+                                                class="btn btn-sm {{ $homestay->is_featured ? 'btn-outline-success' : 'btn-outline-secondary' }}"
+                                                title="Toggle Feature">
+                                                <i class="fas fa-thumbtack"></i>
+                                                {{ $homestay->is_featured ? 'Featured' : 'Feature' }}
+                                            </button>
+                                        </form>
+
+                                        @if(!$homestay->is_active && $homestay->owner)
+                                            <form action="{{ route('admin.kamar.confirm', $homestay->id) }}" method="POST"
                                                 class="d-inline">
                                                 @csrf
                                                 @method('PUT')
-                                                <button type="submit"
-                                                    class="btn btn-sm {{ $homestay->is_featured ? 'btn-outline-success' : 'btn-outline-secondary' }}"
-                                                    title="Toggle Feature">
-                                                    <i class="fas fa-thumbtack"></i>
+                                                <button type="submit" class="btn btn-sm btn-primary" title="Konfirmasi">
+                                                    <i class="fas fa-check"></i> Konfirmasi
                                                 </button>
                                             </form>
+                                        @endif
 
-                                            @if(!$homestay->is_active && $homestay->owner)
-                                                <form action="{{ route('admin.kamar.confirm', $homestay->id) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <button type="submit" class="btn btn-sm btn-primary" title="Konfirmasi">
-                                                        <i class="fas fa-check"></i>
-                                                    </button>
-                                                </form>
-                                            @endif
-
-                                            <form action="{{ route('admin.kamar.destroy', $homestay->id) }}" method="POST"
-                                                class="delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-delete" title="Hapus"
-                                                    onclick="return confirm('Yakin ingin menghapus kamar ini? Data yang sudah dihapus tidak bisa dipulihkan.')">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="10" class="text-center empty-state">
-                                        <i class="fas fa-inbox empty-icon"></i>
-                                        <p class="text-muted">Belum ada kamar. <a
-                                                href="{{ route('admin.kamar.create') }}">Tambah kamar sekarang</a></p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                        <form action="{{ route('admin.kamar.destroy', $homestay->id) }}" method="POST"
+                                            class="delete-form d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-delete" title="Hapus"
+                                                onclick="return confirm('Yakin ingin menghapus kamar ini? Data yang sudah dihapus tidak bisa dipulihkan.')">
+                                                <i class="fas fa-trash"></i> Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="empty-state-full">
+                            <i class="fas fa-inbox empty-icon"></i>
+                            <p class="text-muted">Belum ada kamar. <a href="{{ route('admin.kamar.create') }}">Tambah kamar
+                                    sekarang</a></p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

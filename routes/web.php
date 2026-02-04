@@ -7,6 +7,8 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PagesController;
+use App\Http\Controllers\OwnerProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,7 @@ use App\Http\Controllers\ArticleController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/tentang-kami', [PagesController::class, 'about'])->name('about');
 
 // Debug route used in local/testing only
 if (app()->environment('local', 'testing')) {
@@ -118,3 +121,12 @@ Route::middleware([\App\Http\Middleware\Authenticate::class, \App\Http\Middlewar
     Route::get('/bookings', [\App\Http\Controllers\OwnerBookingController::class, 'index'])->name('bookings.index');
     Route::put('/bookings/{id}/status', [\App\Http\Controllers\OwnerBookingController::class, 'updateStatus'])->name('bookings.updateStatus');
 });
+
+// Owner Profile - Public (MUST be after protected owner routes to avoid conflicts)
+Route::get('/owner/{id}', [OwnerProfileController::class, 'show'])->name('owner.profile');
+
+// Test route for debugging (optional - remove in production)
+Route::get('/test-owner-profile', function () {
+    $owners = \App\Models\User::where('role', 'owner')->with('homestays')->get();
+    return view('pages.test-owner-profile', ['owners' => $owners]);
+})->name('test.owner-profile');

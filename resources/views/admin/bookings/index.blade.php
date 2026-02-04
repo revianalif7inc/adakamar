@@ -2,13 +2,17 @@
 
 @section('title', 'Manajemen Pemesanan')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/bookings.css') }}">
+@endsection
+
 @section('content')
     <div class="admin-bookings-list">
         <div class="container">
             <!-- Header -->
             <div class="admin-bookings-header">
                 <div>
-                    <h1>Manajemen Pemesanan</h1>
+                    <h1><i class="fas fa-list-check"></i> Manajemen Pemesanan</h1>
                     <p class="text-muted">Kelola semua pemesanan kamar dari tamu</p>
                 </div>
             </div>

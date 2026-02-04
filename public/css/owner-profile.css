@@ -1,0 +1,552 @@
+/* ============================================
+   Owner Profile Page Styles
+   ============================================ */
+
+/* Color Variables - Easy to Customize */
+:root {
+    --owner-header-bg: linear-gradient(135deg, #1e3a5f 0%, #0077be 100%);
+    --owner-primary: #1e3a5f;
+    --owner-secondary: #0077be;
+    --owner-accent: #f39c12;
+    --owner-text-dark: #2d3748;
+    --owner-text-light: #718096;
+    --owner-border: #e2e8f0;
+    --owner-bg-light: #f7fafc;
+    --owner-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --owner-card-shadow-hover: 0 12px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   Owner Profile Page
+   ============================================ */
+
+.owner-profile-page {
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+/* ============================================
+   Header Section
+   ============================================ */
+
+.owner-header {
+    background: var(--owner-header-bg);
+    color: white;
+    padding: 60px 0 40px;
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+}
+
+.owner-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.owner-header-content {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Avatar */
+.owner-avatar-large {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 140px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    font-size: 60px;
+    font-weight: bold;
+    flex-shrink: 0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Header Info */
+.owner-header-info {
+    flex: 1;
+}
+
+.owner-name {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--owner-accent);
+    margin: 0 0 15px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.owner-email,
+.owner-phone {
+    font-size: 16px;
+    margin: 8px 0;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+}
+
+/* Stats */
+.owner-stats {
+    display: flex;
+    gap: 30px;
+    margin-top: 25px;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    color: var(--owner-accent);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.stat-number {
+    color: var(--owner-accent);
+    font-size: 24px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stat-label {
+    color: white;
+    font-size: 13px;
+    opacity: 0.85;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* ============================================
+   Container & Sections
+   ============================================ */
+
+.owner-profile-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+/* Locations Filter */
+.locations-filter {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 35px;
+    box-shadow: var(--owner-card-shadow);
+}
+
+.locations-filter h3 {
+    color: var(--owner-text-dark);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.location-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.location-tag {
+    background: var(--owner-bg-light);
+    border: 1px solid var(--owner-border);
+    color: var(--owner-text-dark);
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.location-tag:hover {
+    background: var(--owner-primary);
+    color: white;
+    border-color: var(--owner-primary);
+}
+
+/* ============================================
+   Homestays Section
+   ============================================ */
+
+.owner-homestays-section {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    color: var(--owner-text-dark);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.section-title i {
+    color: var(--owner-primary);
+}
+
+/* Grid */
+.owner-homestays-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+/* No Results */
+.no-homestays {
+    background: white;
+    border-radius: 12px;
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: var(--owner-card-shadow);
+}
+
+.no-homestays i {
+    font-size: 60px;
+    color: var(--owner-border);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.no-homestays p {
+    color: var(--owner-text-light);
+    font-size: 16px;
+    margin: 0;
+}
+
+/* ============================================
+   Homestay Card
+   ============================================ */
+
+.owner-homestay-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--owner-card-shadow);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    cursor: pointer;
+}
+
+.owner-homestay-card:hover {
+    box-shadow: var(--owner-card-shadow-hover);
+    transform: translateY(-8px);
+}
+
+/* Image */
+.card-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: var(--owner-bg-light);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.owner-homestay-card:hover .card-image {
+    transform: scale(1.08);
+}
+
+.featured-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 193, 7, 0.95);
+    color: #333;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Content */
+.card-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-title {
+    color: var(--owner-text-dark);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+    word-break: break-word;
+}
+
+.card-location {
+    color: var(--owner-text-light);
+    font-size: 13px;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.card-description {
+    color: var(--owner-text-light);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    flex: 1;
+}
+
+/* Amenities */
+.card-amenities {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--owner-border);
+}
+
+.amenity {
+    color: var(--owner-text-light);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Pricing */
+.card-pricing {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--owner-border);
+}
+
+.price-option {
+    text-align: center;
+    background: var(--owner-bg-light);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.price-label {
+    display: block;
+    color: var(--owner-text-light);
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.price-value {
+    display: block;
+    color: var(--owner-primary);
+    font-size: 12px;
+    font-weight: 700;
+    word-break: break-word;
+}
+
+/* Rating */
+.card-rating {
+    margin-bottom: 12px;
+}
+
+.rating-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Actions */
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-primary {
+    background: var(--owner-primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--owner-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background: var(--owner-bg-light);
+    color: var(--owner-primary);
+    border: 1px solid var(--owner-primary);
+}
+
+.btn-secondary:hover {
+    background: var(--owner-primary);
+    color: white;
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+
+@media (max-width: 768px) {
+    .owner-header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .owner-avatar-large {
+        width: 100px;
+        height: 100px;
+        font-size: 44px;
+    }
+
+    .owner-name {
+        font-size: 24px;
+    }
+
+    .owner-stats {
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .owner-homestays-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+    }
+
+    .section-title {
+        font-size: 22px;
+    }
+
+    .card-pricing {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .owner-header {
+        padding: 40px 0 30px;
+    }
+
+    .owner-name {
+        font-size: 20px;
+    }
+
+    .owner-email,
+    .owner-phone {
+        font-size: 14px;
+    }
+
+    .owner-stats {
+        gap: 15px;
+    }
+
+    .stat-number {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+
+    .owner-homestays-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .card-image-wrapper {
+        height: 150px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .card-content {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 8px 10px;
+        font-size: 12px;
+    }
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
+
+.text-center {
+    text-align: center;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.owner-homestay-card {
+    animation: fadeInUp 0.5s ease-out;
+}

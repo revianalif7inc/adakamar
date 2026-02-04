@@ -2,77 +2,121 @@
 
 @section('title', 'Kelola Artikel')
 
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/admin-management.css') }}">
+@endsection
+
 @section('content')
-    <div class="admin-dashboard">
+    <div class="admin-list-page">
         <div class="container">
-            <div class="admin-header">
-                <div>
+            <!-- Header -->
+            <div class="admin-list-header">
+                <div class="admin-list-header-left">
                     <h1>Artikel</h1>
-                    <p class="text-muted">Kelola artikel yang tampil di situs.</p>
+                    <p class="text-muted">Kelola artikel yang tampil di situs</p>
                 </div>
-                <div class="admin-header-actions">
-                    <a href="{{ route('admin.articles.create') }}" class="btn btn-primary btn-lg"><i
-                            class="fas fa-plus"></i> Baru</a>
+                <div class="admin-list-header-right">
+                    <a href="{{ route('admin.articles.create') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus"></i> Buat Artikel Baru
+                    </a>
                 </div>
             </div>
 
+            <!-- Alert Messages -->
             @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <div class="alert alert-success alert-dismissible fade show">
+                    <i class="fas fa-check-circle"></i> {{ session('success') }}
+                    <button type="button" class="btn-close" data-dismiss="alert"></button>
+                </div>
             @endif
 
-            <div class="admin-section">
-                <div class="bookings-table-wrapper">
-                    <table class="table table-admin">
-                        <thead>
-                            <tr>
-                                <th width="60">ID</th>
-                                <th>Judul</th>
-                                <th>Penulis</th>
-                                <th>Publikasi</th>
-                                <th width="160">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($articles as $a)
-                                <tr>
-                                    <td>#{{ $a->id }}</td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            @if($a->image)
-                                                <img src="{{ asset('storage/' . $a->image) }}" alt="thumb" class="article-thumb">
+            <!-- Articles List -->
+            <div class="list-card">
+                <div class="articles-grid-container">
+                    @forelse($articles as $a)
+                        <div class="article-card">
+                            <div class="article-card-image">
+                                @if($a->image)
+                                    <img src="{{ asset('storage/' . $a->image) }}" alt="{{ $a->title }}" />
+                                @else
+                                    <div class="article-image-placeholder">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                @endif
+                                <div class="article-card-overlay">
+                                    <a href="{{ route('admin.articles.show', $a) }}" class="btn btn-sm btn-outline">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="article-card-content">
+                                <div class="article-card-header">
+                                    <div class="article-id">#{{ $a->id }}</div>
+                                    <div class="article-status">
+                                        @if($a->published_at)
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check-circle"></i> Published
+                                            </span>
+                                        @else
+                                            <span class="badge badge-draft">
+                                                <i class="fas fa-file"></i> Draft
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <h3 class="article-card-title">{{ $a->title }}</h3>
+
+                                <p class="article-card-excerpt">{{ Str::limit($a->excerpt, 120) }}</p>
+
+                                <div class="article-card-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>{{ $a->author->name ?? '—' }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-calendar"></i>
+                                        <span>
+                                            @if($a->published_at)
+                                                {{ \Illuminate\Support\Carbon::parse($a->published_at)->format('d M Y') }}
+                                            @else
+                                                Belum dipublikasikan
                                             @endif
-                                            <div>
-                                                <strong>{{ $a->title }}</strong>
-                                                <div class="text-muted small">{{ Str::limit($a->excerpt, 80) }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>{{ $a->author->name ?? '—' }}</td>
-                                    <td>{{ $a->published_at ? \Illuminate\Support\Carbon::parse($a->published_at)->format('d M Y') : 'Draft' }}
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('admin.articles.show', $a) }}" class="btn btn-xs btn-secondary"
-                                            title="Lihat"><i class="fas fa-eye"></i></a>
-                                        <a href="{{ route('admin.articles.edit', $a) }}" class="btn btn-xs btn-primary"
-                                            title="Edit"><i class="fas fa-edit"></i></a>
-                                        <form action="{{ route('admin.articles.destroy', $a) }}" method="POST"
-                                            class="d-inline-block" onsubmit="return confirm('Hapus artikel ini?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-xs btn-danger" title="Hapus"><i
-                                                    class="fas fa-trash"></i></button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center py-4">Belum ada artikel</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                    <div class="mt-3">{{ $articles->links() }}</div>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="article-card-footer">
+                                <div class="article-actions">
+                                    <a href="{{ route('admin.articles.show', $a) }}" class="btn btn-sm btn-outline">
+                                        <i class="fas fa-eye"></i> Lihat
+                                    </a>
+                                    <a href="{{ route('admin.articles.edit', $a) }}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="{{ route('admin.articles.destroy', $a) }}" method="POST" class="d-inline"
+                                        style="flex: 1;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-sm btn-danger" style="width: 100%; justify-content: center;"
+                                            onclick="return confirm('Hapus artikel ini?')">
+                                            <i class="fas fa-trash"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="empty-state-full">
+                            <i class="fas fa-inbox empty-icon"></i>
+                            <p class="text-muted">Belum ada artikel. <a href="{{ route('admin.articles.create') }}">Buat artikel
+                                    sekarang</a></p>
+                        </div>
+                    @endforelse
                 </div>
+                <div class="pagination-wrapper">{{ $articles->links() }}</div>
             </div>
         </div>
     </div>

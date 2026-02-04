@@ -3,13 +3,12 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
-<link rel="stylesheet" href="{{ asset('css/admin-dashboard.css') }}">
     <div class="admin-dashboard">
         <div class="container">
             <!-- Header -->
             <div class="admin-header">
                 <div>
-                    <h1>Dashboard Admin</h1>
+                    <h1><i class="fas fa-chart-line"></i> Dashboard Admin</h1>
                     <p class="text-muted">Kelola semua aspek platform AdaKamar dari sini</p>
                 </div>
                 <div class="admin-header-actions">
@@ -61,7 +60,7 @@
 
             <!-- Management Sections -->
             <div class="admin-sections">
-                <!-- Small quick-manage cards for categories & locations -->
+                <!-- Quick manage cards -->
                 <div class="quick-manage-grid">
                     <div class="quick-card">
                         <div class="quick-card-row">
@@ -343,5 +342,8 @@
         </div>
     </div>
 
-    
+@endsection
+
+@section('css')
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 @endsection

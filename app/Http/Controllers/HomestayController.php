@@ -32,7 +32,7 @@ class HomestayController extends Controller
 
             if ($category) {
                 $query->whereHas('categories', function ($q) use ($category) {
-                    $q->where('id', $category);
+                    $q->where('categories.id', $category);
                 });
             }
 
@@ -154,7 +154,8 @@ class HomestayController extends Controller
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
                     $path = $file->store('homestays', 'public');
-                    if ($path) $extraImages[] = $path;
+                    if ($path)
+                        $extraImages[] = $path;
                 }
             }
         }
@@ -280,7 +281,8 @@ class HomestayController extends Controller
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
                     $path = $file->store('homestays', 'public');
-                    if ($path) $existing[] = $path;
+                    if ($path)
+                        $existing[] = $path;
                 }
             }
         }
@@ -289,7 +291,10 @@ class HomestayController extends Controller
         if ($request->filled('remove_images')) {
             $toRemove = (array) $request->input('remove_images');
             foreach ($toRemove as $p) {
-                try { \Illuminate\Support\Facades\Storage::disk('public')->delete($p); } catch (\Throwable $e) {}
+                try {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($p);
+                } catch (\Throwable $e) {
+                }
                 $existing = array_values(array_diff($existing, [$p]));
             }
         }

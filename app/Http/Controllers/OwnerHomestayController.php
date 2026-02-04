@@ -14,10 +14,47 @@ class OwnerHomestayController extends Controller
         $this->middleware(['auth', \App\Http\Middleware\OwnerMiddleware::class]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $homestays = auth()->user()->homestays()->latest()->paginate(12);
-        return view('owner.homestays.index', compact('homestays'));
+        $q = $request->query('q');
+        $category = $request->query('category');
+        $location = $request->query('location_id');
+        $status = $request->query('status');
+
+        $query = auth()->user()->homestays();
+
+        if ($q) {
+            $query->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                    ->orWhere('location', 'like', "%{$q}%")
+                    ->orWhere('description', 'like', "%{$q}%");
+            });
+        }
+
+        if ($category) {
+            $query->whereHas('categories', function ($q) use ($category) {
+                $q->where('categories.id', $category);
+            });
+        }
+
+        if ($location) {
+            $query->where('location_id', $location);
+        }
+
+        if ($status === 'active') {
+            $query->where('is_active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        $homestays = $query->latest()
+            ->paginate(12)
+            ->appends($request->except('page'));
+
+        $categories = Category::orderBy('sort_order', 'asc')->get();
+        $locations = Location::orderBy('name')->get();
+
+        return view('owner.homestays.index', compact('homestays', 'q', 'category', 'location', 'status', 'categories', 'locations'));
     }
 
     public function create()
@@ -84,7 +121,8 @@ class OwnerHomestayController extends Controller
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
                     $path = $file->store('homestays', 'public');
-                    if ($path) $extraImages[] = $path;
+                    if ($path)
+                        $extraImages[] = $path;
                 }
             }
         }
@@ -198,7 +236,8 @@ class OwnerHomestayController extends Controller
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
                     $path = $file->store('homestays', 'public');
-                    if ($path) $existing[] = $path;
+                    if ($path)
+                        $existing[] = $path;
                 }
             }
         }
@@ -207,7 +246,10 @@ class OwnerHomestayController extends Controller
         if ($request->filled('remove_images')) {
             $toRemove = (array) $request->input('remove_images');
             foreach ($toRemove as $p) {
-                try { \Illuminate\Support\Facades\Storage::disk('public')->delete($p); } catch (\Throwable $e) {}
+                try {
+                    \Illuminate\Support\Facades\Storage::disk('public')->delete($p);
+                } catch (\Throwable $e) {
+                }
                 $existing = array_values(array_diff($existing, [$p]));
             }
         }

@@ -1,54 +1,79 @@
-<aside class="articles-widgets">
-    <div class="widget-box mb-4">
-        <h5 class="widget-title">Tentang Penulis Artikel</h5>
-        <div class="widget-body d-flex gap-3 align-items-center">
+<aside class="articles-sidebar">
+    <!-- Author Widget -->
+    <div class="sidebar-widget author-widget">
+        <h3><i class="fas fa-user-circle"></i> Tentang Kami</h3>
+        <div class="widget-content">
             @php $author = \App\Models\User::where('role', 'admin')->first(); @endphp
             <div class="author-avatar">
-                @if($author)
-                    <div class="avatar-circle">{{ strtoupper(substr($author->name, 0, 1)) }}</div>
-                @else
-                    <div class="avatar-circle">A</div>
-                @endif
+                {{ strtoupper(substr($author->name ?? 'AdaKamar', 0, 1)) }}
             </div>
-            <div>
+            <div class="author-info">
                 <strong>{{ $author->name ?? 'Tim AdaKamar' }}</strong>
-                <p class="small text-muted mb-0">Kami berbagi tips, berita, dan panduan seputar homestay dan pariwisata.
-                </p>
+                <p>Kami berbagi tips, panduan, dan informasi terpercaya seputar homestay dan pariwisata Indonesia.</p>
+                <div class="social-links">
+                    <a href="#" title="Facebook" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="#" title="Instagram" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="#" title="Twitter" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="widget-box mb-4">
-        <h5 class="widget-title">Trending Post</h5>
+    <!-- Trending Widget -->
+    <div class="sidebar-widget">
+        <h3><i class="fas fa-fire"></i> Artikel Populer</h3>
         <div class="widget-body">
-            <ul class="list-unstyled trending-list">
+            <ul class="trending-list">
                 @php
                     $trending = isset($category) ? $category->articles()->published()->orderBy('published_at', 'desc')->limit(5)->get() : \App\Models\Article::published()->orderBy('published_at', 'desc')->limit(5)->get();
                 @endphp
                 @foreach($trending as $t)
                     <li class="trending-item">
-                        <a href="{{ route('artikel.show', $t) }}">{{ \Illuminate\Support\Str::limit($t->title, 60) }}</a>
-                        <div class="text-muted small">
-                            {{ \Illuminate\Support\Carbon::parse($t->published_at)->format('d M Y') }}</div>
+                        <div class="trending-counter">{{ $loop->index + 1 }}</div>
+                        <a href="{{ route('artikel.show', $t) }}">
+                            <span>{{ \Illuminate\Support\Str::limit($t->title, 50) }}</span>
+                            <span
+                                class="date">{{ \Illuminate\Support\Carbon::parse($t->published_at)->format('d M Y') }}</span>
+                        </a>
                     </li>
                 @endforeach
             </ul>
         </div>
     </div>
 
+    <!-- Categories Widget -->
     @php $hasArticleCategories = \Illuminate\Support\Facades\Schema::hasTable('article_categories'); @endphp
-    <div class="widget-box mb-4">
-        <h5 class="widget-title">Kategori Artikel</h5>
-        <div class="widget-body">
-            <ul class="list-unstyled categories-list">
-                @if($hasArticleCategories)
+    @if($hasArticleCategories)
+        <div class="sidebar-widget">
+            <h3><i class="fas fa-folder"></i> Kategori Artikel</h3>
+            <div class="widget-body">
+                <ul class="categories-list">
                     @foreach(\App\Models\ArticleCategory::orderBy('name', 'asc')->get() as $c)
-                        <li><a href="{{ route('artikel.category', $c->slug) }}">{{ $c->name }}</a></li>
+                        <li>
+                            <a href="{{ route('artikel.category', $c->slug) }}">
+                                <span>{{ $c->name }}</span>
+                                <span class="count">{{ $c->articles()->count() }}</span>
+                            </a>
+                        </li>
                     @endforeach
-                @else
-                    <li class="text-muted">Belum ada kategori artikel</li>
-                @endif
-            </ul>
+                </ul>
+            </div>
         </div>
+    @endif
+
+    <!-- Subscribe Widget -->
+    <div class="sidebar-widget subscribe-widget">
+        <h3><i class="fas fa-bell"></i> Subscribe Newsletter</h3>
+        <p>Dapatkan update artikel terbaru langsung ke email Anda</p>
+        <form class="subscribe-form" action="#" method="POST">
+            <input type="email" placeholder="Masukkan email Anda..." required>
+            <button type="submit"><i class="fas fa-paper-plane"></i> Subscribe</button>
+        </form>
     </div>
 </aside>

@@ -210,7 +210,7 @@
                                             <p class="owner-name">{{ $homestay->owner->name }}</p>
                                             <p class="owner-contact">{{ $homestay->owner->phone ?? $homestay->owner->email }}
                                             </p>
-                                            <a href="{{ route('admin.users.edit', $homestay->owner->id) }}"
+                                            <a href="{{ route('owner.profile', $homestay->owner->id) }}"
                                                 class="btn btn-sm btn-outline">View Profile</a>
                                         </div>
                                     </div>

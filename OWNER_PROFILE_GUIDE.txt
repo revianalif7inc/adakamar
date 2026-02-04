@@ -1,0 +1,204 @@
+<!-- OWNER PROFILE FEATURE DOCUMENTATION -->
+
+=== FITUR OWNER PROFILE ===
+
+DESKRIPSI:
+Menampilkan halaman profil pemilik kamar dengan daftar semua kamar yang dimiliki.
+Pengguna dapat melihat informasi lengkap pemilik dan semua properti mereka.
+
+---
+
+FILE & STRUKTUR
+==============
+
+1. ROUTE (routes/web.php)
+   Route::get('/owner/{id}', [OwnerProfileController::class, 'show'])->name('owner.profile');
+   
+   URL: /owner/{id}
+   Contoh: /owner/1
+
+2. CONTROLLER (app/Http/Controllers/OwnerProfileController.php)
+   - Method show($id)
+   - Mengambil data owner dengan relasi homestays
+   - Menghitung statistik (count, rating, locations)
+
+3. VIEW (resources/views/pages/owner-profile.blade.php)
+   Menampilkan:
+   - Header dengan avatar & info pemilik
+   - Stats: Jumlah properti, rating rata-rata, lokasi
+   - Grid homestays dengan detail lengkap
+   - Tombol action: Lihat Detail, Pesan
+
+4. CSS (public/css/owner-profile.css)
+   Styling lengkap dengan:
+   - Header section dengan gradient
+   - Responsive grid
+   - Hover effects
+   - Dark mode ready
+   - Mudah dikustomisasi via CSS variables
+
+---
+
+INTEGRASI KE HALAMAN KAMAR
+==========================
+
+Sudah diupdate di resources/views/pages/kamar.blade.php:
+- Nama pemilik sekarang link ke profil
+- Tombol "Profil" baru di card actions
+- Style di public/css/kamar.css sudah diupdate
+
+---
+
+CSS CUSTOMIZATION
+=================
+
+Untuk mengubah tampilan, edit CSS variables di :root
+
+public/css/owner-profile.css:
+
+--owner-header-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);  /* Header color */
+--owner-primary: #667eea;                                                 /* Primary color */
+--owner-secondary: #764ba2;                                               /* Secondary color */
+--owner-text-dark: #2d3748;                                               /* Text color */
+--owner-text-light: #718096;                                              /* Light text */
+--owner-border: #e2e8f0;                                                  /* Border color */
+--owner-bg-light: #f7fafc;                                                /* Light background */
+
+Contoh perubahan:
+Ubah warna primary: --owner-primary: #ff6b6b; (dari biru menjadi merah)
+
+---
+
+CUSTOMIZATION MUDAH
+===================
+
+1. WARNA
+   Edit :root variables di owner-profile.css
+
+2. SPACING
+   Ubah padding/margin di class masing-masing
+
+3. FONT SIZE
+   Cari .owner-name, .section-title, .card-title dll
+   Ubah font-size sesuai kebutuhan
+
+4. GRID
+   .owner-homestays-grid:
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   Ubah minmax(300px) untuk lebar card
+
+5. BORDER & SHADOW
+   --owner-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   --owner-card-shadow-hover: 0 12px 20px rgba(0, 0, 0, 0.15);
+
+---
+
+FITUR DETAIL
+============
+
+✓ Responsive Design
+  - Desktop: 3 kolom
+  - Tablet: 2 kolom
+  - Mobile: 1 kolom
+
+✓ Header dengan Stats
+  - Avatar besar
+  - Nama, email, phone
+  - Jumlah properti
+  - Rating rata-rata
+  - Lokasi properti
+
+✓ Homestay Cards
+  - Image dengan hover zoom
+  - Featured badge (★ Unggulan)
+  - Title, location, description
+  - Amenities (kamar, kamar mandi, tamu)
+  - Pricing (malam/bulan/tahun)
+  - Rating
+  - Tombol: Lihat Detail, Pesan
+
+✓ Location Filter
+  - Menampilkan semua lokasi properti
+  - Clickable tags
+
+✓ Animations
+  - Fade in on load
+  - Hover effects
+  - Smooth transitions
+
+---
+
+INTEGRASI DENGAN MODEL
+======================
+
+User.php:
+public function homestays()
+{
+    return $this->hasMany(Homestay::class, 'owner_id');
+}
+
+Homestay.php (sudah ada relasi):
+public function owner()
+{
+    return $this->belongsTo(User::class, 'owner_id');
+}
+
+---
+
+TESTING
+=======
+
+1. Buat user dengan role 'owner'
+2. Buat beberapa homestay untuk user tersebut
+3. Buka: http://localhost/adakamar/owner/1
+4. Lihat halaman profil dengan daftar homestay
+
+---
+
+TROUBLESHOOTING
+===============
+
+1. "Route not found"
+   - Pastikan route sudah ditambah di web.php
+   - Clear cache: php artisan route:clear
+
+2. "View not found"
+   - Pastikan file owner-profile.blade.php ada di resources/views/pages/
+
+3. "CSS tidak muncul"
+   - Pastikan owner-profile.css ada di public/css/
+   - Clear cache browser (Ctrl+Shift+Delete)
+
+4. "Homestay tidak tampil"
+   - Pastikan homestay is_active = true
+   - Check owner_id di database
+
+---
+
+MAINTENANCE
+===========
+
+Jika ingin menambah field baru:
+
+1. Edit owner-profile.blade.php
+   Tambah: {{ $owner->new_field }}
+
+2. Edit OwnerProfileController.php
+   Pastikan data diambil dengan query yang tepat
+
+3. Edit CSS sesuai kebutuhan
+
+4. Test di browser
+
+---
+
+NEXT STEPS (OPSIONAL)
+====================
+
+1. Add contact form pemilik
+2. Add reviews dari penyewa di profil
+3. Add verification badge (✓ Verified)
+4. Add response time stats
+5. Add message feature untuk inquiries
+6. Add rating to owner (separate from homestay rating)
+
