@@ -1,0 +1,49 @@
+# Laravel
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/bootstrap/cache
+.env
+.env.backup
+.env.testing
+.env.production.backup
+
+# IDE
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHP
+vendor/
+composer.lock
+.phpunit.result.cache
+
+# Cache & Temp
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/testing/*
+storage/logs/*
+!storage/logs/.gitkeep
+
+# Testing
+tests/Feature/temp/*
+.coverage/
+
+# Build artifacts
+dist/
+build/
+
+# Development files
+DEVELOPMENT.md
