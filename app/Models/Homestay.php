@@ -148,23 +148,20 @@ class Homestay extends Model
         }
 
         $sort = $filters['sort'] ?? request('sort');
-        if ($sort) {
-            switch ($sort) {
-                case 'price_asc':
-                    $query->orderByRaw('COALESCE(price_per_month, price_per_year, price_per_night) asc');
-                    break;
-                case 'price_desc':
-                    $query->orderByRaw('COALESCE(price_per_month, price_per_year, price_per_night) desc');
-                    break;
-                case 'rating':
-                    $query->orderBy('rating', 'desc');
-                    break;
-                case 'newest':
-                    $query->latest();
-                    break;
-                default:
-                    $query->latest();
-            }
+        switch ($sort) {
+            case 'price_asc':
+                $query->orderByRaw('COALESCE(price_per_month, price_per_year, price_per_night) asc');
+                break;
+            case 'price_desc':
+                $query->orderByRaw('COALESCE(price_per_month, price_per_year, price_per_night) desc');
+                break;
+            case 'rating':
+                $query->orderBy('rating', 'desc');
+                break;
+            case 'newest':
+            default:
+                // Default: show newest kamar first (most recently created)
+                $query->latest('created_at');
         }
 
         return $query;

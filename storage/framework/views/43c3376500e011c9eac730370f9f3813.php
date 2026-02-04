@@ -56,8 +56,10 @@
                         </ul>
                     </div>
                 <?php else: ?>
-                    <a href="<?php echo e(route('login')); ?>" class="text-white me-3">Masuk</a>
-                    <a href="<?php echo e(route('register')); ?>" class="btn btn-host btn-sm">Jadi Host!</a>
+                    <div class="auth-buttons">
+                        <a href="<?php echo e(route('login')); ?>" class="btn-login">Masuk</a>
+                        <a href="<?php echo e(route('register')); ?>" class="btn-register">Daftar</a>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

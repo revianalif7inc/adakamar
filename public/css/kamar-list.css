@@ -791,7 +791,7 @@
     padding: 15px;
     background: linear-gradient(135deg, rgba(40, 167, 69, 0.08) 0%, rgba(243, 156, 18, 0.08) 100%);
     border-radius: 8px;
-    border-left: 4px solid var(--success);
+    border-left: 4px solid var(--accent);
 }
 
 .price-label {
@@ -925,7 +925,7 @@
 }
 
 .btn-pesan {
-    background: linear-gradient(135deg, var(--success), #1e7e34);
+    background: linear-gradient(135deg, var(--accent), #f1c40f);
     color: white;
 }
 

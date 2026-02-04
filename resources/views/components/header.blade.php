@@ -56,8 +56,10 @@
                         </ul>
                     </div>
                 @else
-                    <a href="{{ route('login') }}" class="text-white me-3">Masuk</a>
-                    <a href="{{ route('register') }}" class="btn btn-host btn-sm">Jadi Host!</a>
+                    <div class="auth-buttons">
+                        <a href="{{ route('login') }}" class="btn-login">Masuk</a>
+                        <a href="{{ route('register') }}" class="btn-register">Daftar</a>
+                    </div>
                 @endauth
             </div>
         </div>

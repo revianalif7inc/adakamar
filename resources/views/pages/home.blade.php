@@ -222,60 +222,58 @@
     <!-- About Us Section -->
     <div class="about-us-section">
         <div class="container">
-            <div class="about-content">
-                <div class="about-text">
-                    <h2>Tentang AdaKamar</h2>
-                    <p>AdaKamar adalah platform terpercaya untuk menemukan dan menyewa kamar berkualitas di seluruh Indonesia. Kami menyediakan ribuan pilihan kamar, kost, dan homestay dengan harga terjangkau dan transparan.</p>
-                    <ul class="about-features">
-                        <li><i class="fa fa-check-circle"></i> Ribuan pilihan kamar terverifikasi</li>
-                        <li><i class="fa fa-check-circle"></i> Harga transparan tanpa biaya tersembunyi</li>
-                        <li><i class="fa fa-check-circle"></i> Proses booking mudah dan cepat</li>
-                        <li><i class="fa fa-check-circle"></i> Dukungan pelanggan 24/7</li>
-                    </ul>
-                    <a href="{{ route('about') }}" class="btn btn-primary">Lihat Selengkapnya</a>
-                </div>
-                <div class="about-image">
-                    <div class="about-graphic">
-                        <div class="graphic-item">
-                            <i class="fa fa-home"></i>
-                            <span>5000+</span>
-                            <p>Kamar Tersedia</p>
-                        </div>
-                        <div class="graphic-item">
-                            <i class="fa fa-users"></i>
-                            <span>10000+</span>
-                            <p>Pengguna Aktif</p>
-                        </div>
-                        <div class="graphic-item">
-                            <i class="fa fa-star"></i>
-                            <span>4.8/5</span>
-                            <p>Rating Kepuasan</p>
-                        </div>
-                        <div class="graphic-item">
-                            <i class="fa fa-map"></i>
-                            <span>50+</span>
-                            <p>Kota di Indonesia</p>
-                        </div>
+            <div class="about-wrapper">
+                <div class="about-image animate-on-scroll">
+                    <div class="about-image-container">
+                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="Villa Ada Kamar" class="about-main-image">
+                        <div class="about-image-overlay"></div>
                     </div>
+                </div>
+                
+                <div class="about-text-content animate-on-scroll">
+                    <div class="about-heading">
+                        <h2 class="about-title">Apa itu <span class="highlight-text">Villa Ada Kamar</span>?</h2>
+                    </div>
+                    
+                    <p class="about-description">
+                        AdaKamar adalah perusahaan hospitality yang menawarkan pengalaman menginap dengan konsep bertamu ala Indonesia. 
+                        Dengan tagline "Bertamu Ala Indonesia", di AdaKamar, Anda akan merasakan keramahtamahan khas Indonesia yang ditunjukkan 
+                        oleh tuan rumah. Setiap unit pengingapan kami dilengkapi dengan fasilitas yang mencerminkan budaya lokal, memastikan 
+                        kenyamanan dan suasana yang autentik selama Anda menginap.
+                    </p>
+                    
+                    <a href="{{ route('about') }}" class="btn btn-primary btn-lg about-cta">
+                        <span>Lebih lanjut</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Become Owner CTA -->
-    <div class="become-owner-section py-5">
-        <div class="container text-center">
-            <h2>Jadilah Mitra AdaKamar</h2>
-            <p class="text-muted mb-4">Daftarkan kamar Anda dan dapatkan tamu dari seluruh Indonesia. Tingkatkan penghasilan Anda bersama kami.</p>
-            
-            <div class="owner-cta-buttons">
-                @php
-                    $waNumber = env('WHATSAPP_NUMBER', '628123456789');
-                    $waMessage = urlencode('Halo AdaKamar, saya ingin mendaftarkan kamar sebagai owner. Bisa dibantu?');
-                @endphp
-                <a class="btn btn-success btn-lg" href="https://wa.me/{{ $waNumber }}?text={{ $waMessage }}" target="_blank" rel="noopener">
-                    <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
-                </a>
+    <div class="become-owner-section">
+        <div class="container">
+            <div class="owner-wrapper">
+                <div class="owner-image animate-on-scroll">
+                    <div class="owner-image-container">
+                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="Jadilah Owner AdaKamar" class="owner-main-image">
+                    </div>
+                </div>
+                
+                <div class="owner-text-content animate-on-scroll">
+                    <div class="owner-heading">
+                        <h2 class="owner-title">Yakin gamau sewa di Adakamar?</h2>
+                    </div>
+                    
+                    <p class="owner-description">
+                        Kami menawarkan fasilitas modern yang nyaman, keramahan khas Indonesia yang membuat Anda merasa seperti di rumah sendiri, lokasi strategis yang ideal untuk liburan atau perjalanan bisnis, harga terjangkau, sistem keamanan canggih untuk kenyamanan Anda, dan layanan profesional dari staf yang siap melayani dengan ramah.
+                    </p>
+                    
+                    <a href="javascript:void(0)" class="btn btn-owner-cta owner-cta">
+                        <span>Pesan Sekarang!</span>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
