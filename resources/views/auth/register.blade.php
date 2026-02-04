@@ -55,7 +55,9 @@
                         placeholder="Ulangi password Anda" class="form-control-premium">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-login">Daftar Sekarang</button>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span><i class="fas fa-user-plus"></i> Daftar Sekarang</span>
+                </button>
             </form>
 
             <div class="auth-divider">atau</div>

@@ -37,7 +37,9 @@
                         class="form-control-premium">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-login">Masuk</button>
+                <button type="submit" class="btn btn-primary btn-login">
+                    <span><i class="fas fa-sign-in-alt"></i> Masuk</span>
+                </button>
             </form>
 
             <div class="auth-divider">atau</div>
