@@ -6,14 +6,14 @@
     <div class="hero-section">
         <div class="container">
             <div class="hero-row">
-                <div class="hero-left">
+                <div class="hero-left animate-on-scroll">
                     <h1>Selamat Datang di AdaKamar</h1>
                     <p>Temukan dan sewa kamar terbaik di Indonesia</p>
 
                     <div class="hero-search">
-                        <form action="<?php echo e(route('kamar.index')); ?>" method="GET" class="search-box">
+                        <form action="<?php echo e(route('kamar.index')); ?>" method="GET" class="search-box" id="homeSearchForm">
                             <input type="text" name="search" class="form-control search-input"
-                                placeholder="Cari kamar, lokasi, atau fasilitas..." value="<?php echo e(request('search')); ?>" required>
+                                placeholder="Cari kamar, lokasi, atau fasilitas..." value="<?php echo e(request('search')); ?>">
 
                             <select name="location_id" class="form-select search-select">
                                 <option value="">Semua Lokasi</option>
@@ -39,7 +39,8 @@
 
     <div class="featured-kamar">
         <div class="container">
-            <div class="card-slider-header">
+                <div class="card-slider-header animate-on-scroll">
+                <div class="section-divider"></div>
                 <h2>Kamar Pilihan</h2>
                 <p class="text-muted">Pilihan kamar yang dipilih oleh admin untuk rekomendasi terbaik.</p>
             </div>
@@ -48,7 +49,7 @@
         <div class="container">
             <div class="kamar-grid">
                 <?php $__empty_1 = true; $__currentLoopData = $featuredHomestays->take(6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $homestay): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <div class="kamar-card card-item h-100 shadow-sm">
+                    <div class="kamar-card card-item h-100 shadow-sm animate-on-scroll">
                         <a class="card-link" href="<?php echo e(route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? ''])); ?>">
                             <div class="kamar-image card-image">
                                 <?php if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url)): ?>
@@ -103,7 +104,8 @@
 
     <div class="card-slider-section">
         <div class="container">
-            <div class="card-slider-header">
+            <div class="card-slider-header animate-on-scroll">
+                <div class="section-divider"></div>
                 <div class="section-stars">★ ★ ★</div>
                 <h2>Homestay Jogja Terbaik</h2>
                 <p>Nikmati Keseruan Bersama Rombongan Dengan Memilih Homestay Jogja Terbaik</p>
@@ -171,82 +173,12 @@
         </div>
     </div>
 
-    <!-- Kamar Murah (cheapest) -->
-    <div class="cheap-kamar mt-5">
-        <div class="container">
-            <div class="card-slider-header">
-                <h2>Kamar Murah</h2>
-                <p class="text-muted">Kamar dengan harga termurah — cocok untuk anggaran terbatas.</p>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="kamar-grid">
-                <?php if(isset($cheapestHomestays) && $cheapestHomestays->count()): ?>
-                    <?php $__currentLoopData = $cheapestHomestays->take(6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $homestay): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="kamar-card card-item h-100 shadow-sm">
-                            <a class="card-link" href="<?php echo e(route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? ''])); ?>">
-                                <div class="kamar-image card-image">
-                                    <?php if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url)): ?>
-                                        <img loading="lazy" src="<?php echo e(asset('storage/' . $homestay->image_url)); ?>" alt="<?php echo e($homestay->name); ?>">
-                                    <?php else: ?>
-                                        <img loading="lazy" src="<?php echo e(asset('images/homestays/placeholder.svg')); ?>" alt="placeholder">
-                                    <?php endif; ?>
-                                    <div class="pin-badge" aria-hidden="true"><i class="fa fa-map-marker-alt"></i></div>
-                                    <div class="cheap-badge" aria-hidden="true">Termurah</div>
-                                </div>
-
-                                <div class="kamar-body card-body">
-                                    <div class="kamar-title-row">
-                                        <h3 title="<?php echo e($homestay->name); ?>"><?php echo e(\Illuminate\Support\Str::limit($homestay->name, 36)); ?></h3>
-                                    </div>
-
-                                    <p class="excerpt"><?php echo e(\Illuminate\Support\Str::limit($homestay->description ?? 'Homestay nyaman dan bersih.', 90)); ?></p>
-
-                                    <div class="dotted-divider" aria-hidden="true"></div>
-
-                                    <div class="card-meta d-flex align-items-center justify-content-center gap-4">
-                                        <?php if($homestay->price_per_month): ?>
-                                            <div class="price-pill">Rp <?php echo e(number_format($homestay->price_per_month, 0, ',', '.')); ?> / bulan</div>
-                                        <?php elseif($homestay->price_per_year): ?>
-                                            <div class="price-pill">Rp <?php echo e(number_format($homestay->price_per_year, 0, ',', '.')); ?> / tahun</div>
-                                        <?php else: ?>
-                                            <div class="price-pill text-muted">Harga belum tersedia</div>
-                                        <?php endif; ?>
-                                        <div class="badge-rating">★ <?php echo e(number_format($homestay->rating ?? 0, 2)); ?></div>
-                                    </div>
-                                </div>
-                            </a>
-
-                            <div class="kamar-actions p-3 d-flex gap-2 justify-content-center">
-                                <a href="<?php echo e(route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? ''])); ?>" class="btn btn-detail">Lihat Detail</a>
-                                <?php if(auth()->guard()->check()): ?>
-                                    <a href="<?php echo e(route('booking.create', $homestay->id)); ?>" class="btn btn-pesan">Pesan</a>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                <?php else: ?>
-                    <p class="text-muted">Belum ada data kamar murah untuk saat ini.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="container">
-            <div class="center-cta">
-                <a href="<?php echo e(route('kamar.index')); ?>" class="btn btn-primary">Lihat Semua Kamar <span class="btn-icon"><i class="fa fa-arrow-right"></i></span></a>
-            </div>
-        </div>
-    </div>
-
-
-    
-
 
     <!-- Testimonials Slider -->
     <div class="testimonials-section">
         <div class="container">
-            <div class="card-slider-header centered">
+            <div class="card-slider-header centered animate-on-scroll">
+                <div class="section-divider"></div>
                 <h2>Apa Kata Penghuni Kost</h2>
                 <p class="text-muted">Testimoni tamu kami memberikan gambaran nyata tentang pengalaman menginap mereka.</p>
             </div>
@@ -290,18 +222,64 @@
     </div>
 
 
+    <!-- About Us Section -->
+    <div class="about-us-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>Tentang AdaKamar</h2>
+                    <p>AdaKamar adalah platform terpercaya untuk menemukan dan menyewa kamar berkualitas di seluruh Indonesia. Kami menyediakan ribuan pilihan kamar, kost, dan homestay dengan harga terjangkau dan transparan.</p>
+                    <ul class="about-features">
+                        <li><i class="fa fa-check-circle"></i> Ribuan pilihan kamar terverifikasi</li>
+                        <li><i class="fa fa-check-circle"></i> Harga transparan tanpa biaya tersembunyi</li>
+                        <li><i class="fa fa-check-circle"></i> Proses booking mudah dan cepat</li>
+                        <li><i class="fa fa-check-circle"></i> Dukungan pelanggan 24/7</li>
+                    </ul>
+                    <a href="<?php echo e(route('about')); ?>" class="btn btn-primary">Lihat Selengkapnya</a>
+                </div>
+                <div class="about-image">
+                    <div class="about-graphic">
+                        <div class="graphic-item">
+                            <i class="fa fa-home"></i>
+                            <span>5000+</span>
+                            <p>Kamar Tersedia</p>
+                        </div>
+                        <div class="graphic-item">
+                            <i class="fa fa-users"></i>
+                            <span>10000+</span>
+                            <p>Pengguna Aktif</p>
+                        </div>
+                        <div class="graphic-item">
+                            <i class="fa fa-star"></i>
+                            <span>4.8/5</span>
+                            <p>Rating Kepuasan</p>
+                        </div>
+                        <div class="graphic-item">
+                            <i class="fa fa-map"></i>
+                            <span>50+</span>
+                            <p>Kota di Indonesia</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Become Owner CTA -->
-    <div class="become-owner-section py-5 bg-light">
+    <div class="become-owner-section py-5">
         <div class="container text-center">
-            <h2>Ingin Jadi Owner?!</h2>
-            <p class="text-muted mb-3">Daftarkan kamar Anda dan dapatkan tamu dari seluruh Indonesia. Hubungi kami melalui WhatsApp untuk bantuan pendaftaran cepat.</p>
-            <?php
-                $waNumber = env('WHATSAPP_NUMBER', '628123456789');
-                $waMessage = urlencode('Halo AdaKamar, saya ingin mendaftarkan kamar sebagai owner. Bisa dibantu?');
-            ?>
-            <a class="btn btn-success btn-lg" href="https://wa.me/<?php echo e($waNumber); ?>?text=<?php echo e($waMessage); ?>" target="_blank" rel="noopener">
-                <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
-            </a>
+            <h2>Jadilah Mitra AdaKamar</h2>
+            <p class="text-muted mb-4">Daftarkan kamar Anda dan dapatkan tamu dari seluruh Indonesia. Tingkatkan penghasilan Anda bersama kami.</p>
+            
+            <div class="owner-cta-buttons">
+                <?php
+                    $waNumber = env('WHATSAPP_NUMBER', '628123456789');
+                    $waMessage = urlencode('Halo AdaKamar, saya ingin mendaftarkan kamar sebagai owner. Bisa dibantu?');
+                ?>
+                <a class="btn btn-success btn-lg" href="https://wa.me/<?php echo e($waNumber); ?>?text=<?php echo e($waMessage); ?>" target="_blank" rel="noopener">
+                    <i class="fab fa-whatsapp"></i> Hubungi via WhatsApp
+                </a>
+            </div>
         </div>
     </div>
 

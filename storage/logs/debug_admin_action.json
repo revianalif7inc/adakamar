@@ -1,1 +1,0 @@
-{"middleware":["web","App\\Http\\Middleware\\Authenticate","App\\Http\\Middleware\\AdminMiddleware"],"as":"admin.users.index","uses":"App\\Http\\Controllers\\AdminUserController@index","controller":"App\\Http\\Controllers\\AdminUserController@index","namespace":null,"prefix":"\/admin","where":[]}

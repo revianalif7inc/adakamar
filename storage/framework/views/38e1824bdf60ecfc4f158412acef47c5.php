@@ -233,7 +233,7 @@ unset($__errorArgs, $__bag); ?>
                                             <p class="owner-contact"><?php echo e($homestay->owner->phone ?? $homestay->owner->email); ?>
 
                                             </p>
-                                            <a href="<?php echo e(route('admin.users.edit', $homestay->owner->id)); ?>"
+                                            <a href="<?php echo e(route('owner.profile', $homestay->owner->id)); ?>"
                                                 class="btn btn-sm btn-outline">View Profile</a>
                                         </div>
                                     </div>

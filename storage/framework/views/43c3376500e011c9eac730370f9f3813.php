@@ -1,4 +1,4 @@
-<header class="site-header sticky-top">
+<header class="site-header">
     <div class="header-top bg-dark text-white">
         <div class="container d-flex align-items-center justify-content-between">
             <div class="top-left">
@@ -9,7 +9,7 @@
             <div class="top-right d-flex align-items-center">
                 <?php if(auth()->guard()->check()): ?>
                     <?php if(auth()->user()->role === 'admin'): ?>
-                        <a href="<?php echo e(route('admin.dashboard')); ?>" class="text-white me-3">Dashboard</a>
+
 
                         <div class="dropdown d-inline me-3">
                             <a class="text-white dropdown-toggle" href="#" role="button" id="adminMenu"
@@ -35,12 +35,12 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userTopMenu">
                             <?php if(auth()->user()->role === 'customer'): ?>
                                 <?php
-                                    $activeBookings = auth()->user()->bookings()->whereIn('status', ['pending','paid','confirmed'])->count();
+                                    $activeBookings = auth()->user()->bookings()->whereIn('status', ['pending', 'paid', 'confirmed'])->count();
                                 ?>
                                 <?php if($activeBookings > 0): ?>
                                     <li>
                                         <a class="dropdown-item d-flex align-items-center justify-content-between"
-                                           href="<?php echo e(route('booking.my_rooms')); ?>">
+                                            href="<?php echo e(route('booking.my_rooms')); ?>">
                                             <span>Kamar Saya</span>
                                             <span class="badge bg-danger ms-2"><?php echo e($activeBookings); ?></span>
                                         </a>
@@ -64,30 +64,36 @@
     </div>
 
     <div class="header-inner bg-primary bg-dark">
-        <nav class="navbar navbar-expand-lg navbar-dark container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container" style="max-width: 1200px; padding-left: 20px; padding-right: 20px;">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-            <div class="collapse navbar-collapse" id="mainNav">
-                <ul class="navbar-nav align-items-lg-center main-menu me-auto text-uppercase fw-semibold">
-                    <li class="nav-item"><a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>" href="<?php echo e(route('home')); ?>">Home</a></li>
-                    <li class="nav-item"><a class="nav-link <?php echo e(request()->routeIs('kamar.*') ? 'active' : ''); ?>" href="<?php echo e(route('kamar.index')); ?>">Explore Kost!</a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link <?php echo e((request()->routeIs('artikel.*') || request()->is('artikel*')) ? 'active' : ''); ?>" href="<?php echo e(route('artikel.index')); ?>">Artikel</a></li>
-                </ul>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav align-items-lg-center main-menu me-auto text-uppercase fw-semibold">
+                        <li class="nav-item"><a class="nav-link <?php echo e(request()->routeIs('home') ? 'active' : ''); ?>"
+                                href="<?php echo e(route('home')); ?>">Home</a></li>
+                        <li class="nav-item"><a class="nav-link <?php echo e(request()->routeIs('kamar.*') ? 'active' : ''); ?>"
+                                href="<?php echo e(route('kamar.index')); ?>">Explore Kost!</a>
+                        </li>
+                        <li class="nav-item"><a
+                                class="nav-link <?php echo e((request()->routeIs('artikel.*') || request()->is('artikel*')) ? 'active' : ''); ?>"
+                                href="<?php echo e(route('artikel.index')); ?>">Artikel</a></li>
+                    </ul>
 
-                <div class="d-flex align-items-center">
-                    <form action="<?php echo e(route('kamar.index')); ?>" method="GET" class="d-flex navbar-search-form d-none d-lg-flex ms-3"
-                        role="search">
-                        <input class="form-control navbar-search-input" type="search" name="search"
-                            placeholder="Cari kamar atau lokasi...">
-                        <!-- Desktop submit button -->
-                        <button class="btn btn-search-nav d-none d-lg-inline-block ms-2" type="submit">Cari</button>
-                        <!-- Mobile search icon (keeps the overlay behavior) -->
-                        <button class="btn btn-search-icon d-lg-none text-white ms-3" id="mobileSearchBtn"
-                            aria-label="Search"><i class="fas fa-search"></i></button>
-                    </form>
+                    <div class="d-flex align-items-center">
+                        <form action="<?php echo e(route('kamar.index')); ?>" method="GET"
+                            class="d-flex navbar-search-form d-none d-lg-flex ms-3" role="search">
+                            <input class="form-control navbar-search-input" type="search" name="search"
+                                placeholder="Cari kamar atau lokasi...">
+                            <!-- Desktop submit button -->
+                            <button class="btn btn-search-nav d-none d-lg-inline-block ms-2" type="submit">Cari</button>
+                            <!-- Mobile search icon (keeps the overlay behavior) -->
+                            <button class="btn btn-search-icon d-lg-none text-white ms-3" id="mobileSearchBtn"
+                                aria-label="Search"><i class="fas fa-search"></i></button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </nav>
