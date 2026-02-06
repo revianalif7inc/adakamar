@@ -58,6 +58,17 @@ class Homestay extends Model
     }
 
     /**
+     * Ensure amenities is always an array.
+     */
+    public function getAmenitiesAttribute($value)
+    {
+        if (is_string($value)) {
+            return json_decode($value, true) ?? [];
+        }
+        return (array) ($value ?? []);
+    }
+
+    /**
      * Boot model events to generate slug when creating.
      */
     protected static function booted()
