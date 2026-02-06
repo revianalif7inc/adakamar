@@ -2446,6 +2446,8 @@ a:focus-visible {
 .cards-track {
     display: flex;
     gap: 22px;
+    padding-left: max(20px, calc((100% - 1400px) / 2));
+    padding-right: max(20px, calc((100% - 1400px) / 2));
     transition: transform .45s cubic-bezier(.2, .9, .2, 1);
     will-change: transform;
 }
@@ -2465,6 +2467,58 @@ a:focus-visible {
     cursor: pointer;
     transition: transform .3s cubic-bezier(.2, .9, .2, 1), box-shadow .3s cubic-bezier(.2, .9, .2, 1);
     position: relative;
+}
+
+/* Responsive mobile adjustments for card slider */
+@media (max-width: 1024px) {
+    .card-item {
+        min-width: 320px;
+        max-width: 380px;
+    }
+    
+    .cards-track {
+        padding-left: max(16px, calc((100% - 1000px) / 2));
+        padding-right: max(16px, calc((100% - 1000px) / 2));
+        gap: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-item {
+        min-width: 280px;
+        max-width: 320px;
+    }
+    
+    .cards-track {
+        padding-left: 16px;
+        padding-right: 16px;
+        gap: 16px;
+    }
+    
+    .card-slider-section {
+        padding: 40px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .card-item {
+        min-width: 260px;
+        max-width: 300px;
+    }
+    
+    .cards-track {
+        padding-left: 12px;
+        padding-right: 12px;
+        gap: 12px;
+    }
+    
+    .card-slider-header h2 {
+        font-size: 1.8rem;
+    }
+    
+    .card-slider-header p {
+        font-size: 0.95rem;
+    }
 }
 
 .card-item::before {
