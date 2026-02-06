@@ -251,17 +251,4 @@ Dan di `config/app.php`:
 
 Silakan fork dan submit pull request untuk kontribusi.
 
-## 📄 Lisensi
-
-MIT License - Silakan gunakan untuk keperluan komersial maupun non-komersial.
-
-## 📞 Support
-
-Untuk pertanyaan atau saran, hubungi kami melalui:
-
-- Email: support@adakamar.id
-- Website: https://adakamar.id
-
----
-
-**Made with ❤️ by RevianAlif Team**
+**Made with ❤️ by RevianAlif**
