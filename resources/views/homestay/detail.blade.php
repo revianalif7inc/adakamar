@@ -20,19 +20,37 @@
                                 <div class="image-slider" id="imageSlider">
                                     @php
                                         $images = $homestay->gallery ?? [];
+                                        // DEBUG: Log gallery images
+                                        \Illuminate\Support\Facades\Log::info('Gallery debug', [
+                                            'homestay_id' => $homestay->id,
+                                            'homestay_name' => $homestay->name,
+                                            'images_count' => count($images),
+                                            'images' => $images,
+                                            'image_url' => $homestay->image_url,
+                                            'raw_images_field' => $homestay->images,
+                                        ]);
                                     @endphp
 
                                     @forelse($images as $img)
                                         <div class="image-slider-item">
-                                            @if(\Illuminate\Support\Facades\Storage::disk('public')->exists($img))
-                                                <img src="{{ asset('storage/' . $img) }}" alt="{{ $homestay->name }}">
+                                            @php
+                                                $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists($img);
+                                                $asset_url = asset('storage/' . $img);
+                                                \Illuminate\Support\Facades\Log::info('Image debug', [
+                                                    'img_path' => $img,
+                                                    'exists' => $exists,
+                                                    'asset_url' => $asset_url,
+                                                ]);
+                                            @endphp
+                                            @if($exists)
+                                                <img src="{{ $asset_url }}" alt="{{ $homestay->name }}" loading="lazy" style="display: block;">
                                             @else
-                                                <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder">
+                                                <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder" loading="lazy" style="display: block;">
                                             @endif
                                         </div>
                                     @empty
                                         <div class="image-slider-item">
-                                            <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder">
+                                            <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="placeholder" loading="lazy" style="display: block;">
                                         </div>
                                     @endforelse
                                 </div>
@@ -151,7 +169,7 @@
 
                 <aside class="detail-right">
                     <div class="aside-sticky" id="asideSticky">
-                        <div class="booking-card" data-price-month="{{ $homestay->price_per_month ?? '' }}" data-price-year="{{ $homestay->price_per_year ?? '' }}">
+                        <div class="booking-card" data-price-month="{{ $homestay->price_per_month ?? '' }}" data-price-year="{{ $homestay->price_per_year ?? '' }}" data-price-night="{{ $homestay->price_per_night ?? '' }}">
                             <h4>{{ $homestay->name }}</h4>
                             @if($homestay->price_per_month)
                                 <p class="price">Mulai <strong>Rp {{ number_format($homestay->price_per_month, 0, ',', '.') }}</strong> / bulan</p>
@@ -181,6 +199,7 @@
                                     <select name="duration_unit" id="duration_unit" class="duration-unit">
                                         <option value="month">Bulan</option>
                                         <option value="year">Tahun</option>
+                                        <option value="night">Harian</option>
                                     </select>
                                     @error('duration') <div class="field-error">{{ $message }}</div> @enderror
                                 </div>
@@ -265,6 +284,7 @@
 
             const pricePerMonth = parseFloat(form.closest('.booking-card').dataset.priceMonth) || 0;
             const pricePerYear = parseFloat(form.closest('.booking-card').dataset.priceYear) || 0;
+            const pricePerNight = parseFloat(form.closest('.booking-card').dataset.priceNight) || 0;
             const bookingDate = document.getElementById('booking_date');
             const durationEl = document.getElementById('duration');
             const durationUnit = document.getElementById('duration_unit');
@@ -294,16 +314,19 @@
                 let unitPrice = 0;
                 if (unit === 'month') unitPrice = pricePerMonth;
                 if (unit === 'year') unitPrice = pricePerYear;
+                if (unit === 'night') unitPrice = pricePerNight;
 
                 if (!unitPrice || unitPrice <= 0) {
                     // price not set for chosen unit
-                    durationSummary.textContent = duration + ' ' + (unit === 'month' ? 'bulan' : 'tahun') + ' (harga belum diset)';
+                    const unitLabel = unit === 'month' ? 'bulan' : (unit === 'year' ? 'tahun' : 'hari');
+                    durationSummary.textContent = duration + ' ' + unitLabel + ' (harga belum diset)';
                     totalPriceEl.textContent = 'Rp -';
                     return false;
                 }
 
                 const total = Math.max(0, duration * unitPrice);
-                durationSummary.textContent = duration + ' ' + (unit === 'month' ? 'bulan' : 'tahun');
+                const unitLabel = unit === 'month' ? 'bulan' : (unit === 'year' ? 'tahun' : 'hari');
+                durationSummary.textContent = duration + ' ' + unitLabel;
                 totalPriceEl.textContent = 'Rp ' + formatRupiah(total);
                 return true;
             }
@@ -311,13 +334,23 @@
             [bookingDate, durationEl, durationUnit, guests].forEach(el => el && el.addEventListener('change', updateSummary));
 
             form.addEventListener('submit', function (e) {
+                e.preventDefault();
                 const valid = updateSummary();
                 if (!valid) {
-                    e.preventDefault();
                     alert('Durasi tidak valid atau harga belum diset untuk unit yang dipilih.');
                     return false;
                 }
-                return true;
+
+                // Redirect to booking create page with query params so user completes booking flow there
+                const base = '{{ route('booking.create', $homestay->id) }}';
+                const params = new URLSearchParams();
+                if (bookingDate && bookingDate.value) params.set('booking_date', bookingDate.value);
+                if (durationEl && durationEl.value) params.set('duration', durationEl.value);
+                if (durationUnit && durationUnit.value) params.set('duration_unit', durationUnit.value);
+                if (guests && guests.value) params.set('total_guests', guests.value);
+
+                window.location.href = base + '?' + params.toString();
+                return false;
             });
 
             // Tabs: make clicks smooth and set active state

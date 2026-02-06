@@ -20,19 +20,37 @@
                                 <div class="image-slider" id="imageSlider">
                                     <?php
                                         $images = $homestay->gallery ?? [];
+                                        // DEBUG: Log gallery images
+                                        \Illuminate\Support\Facades\Log::info('Gallery debug', [
+                                            'homestay_id' => $homestay->id,
+                                            'homestay_name' => $homestay->name,
+                                            'images_count' => count($images),
+                                            'images' => $images,
+                                            'image_url' => $homestay->image_url,
+                                            'raw_images_field' => $homestay->images,
+                                        ]);
                                     ?>
 
                                     <?php $__empty_1 = true; $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                         <div class="image-slider-item">
-                                            <?php if(\Illuminate\Support\Facades\Storage::disk('public')->exists($img)): ?>
-                                                <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="<?php echo e($homestay->name); ?>">
+                                            <?php
+                                                $exists = \Illuminate\Support\Facades\Storage::disk('public')->exists($img);
+                                                $asset_url = asset('storage/' . $img);
+                                                \Illuminate\Support\Facades\Log::info('Image debug', [
+                                                    'img_path' => $img,
+                                                    'exists' => $exists,
+                                                    'asset_url' => $asset_url,
+                                                ]);
+                                            ?>
+                                            <?php if($exists): ?>
+                                                <img src="<?php echo e($asset_url); ?>" alt="<?php echo e($homestay->name); ?>" loading="lazy" style="display: block;">
                                             <?php else: ?>
-                                                <img src="<?php echo e(asset('images/homestays/placeholder.svg')); ?>" alt="placeholder">
+                                                <img src="<?php echo e(asset('images/homestays/placeholder.svg')); ?>" alt="placeholder" loading="lazy" style="display: block;">
                                             <?php endif; ?>
                                         </div>
                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                         <div class="image-slider-item">
-                                            <img src="<?php echo e(asset('images/homestays/placeholder.svg')); ?>" alt="placeholder">
+                                            <img src="<?php echo e(asset('images/homestays/placeholder.svg')); ?>" alt="placeholder" loading="lazy" style="display: block;">
                                         </div>
                                     <?php endif; ?>
                                 </div>
@@ -152,7 +170,7 @@
 
                 <aside class="detail-right">
                     <div class="aside-sticky" id="asideSticky">
-                        <div class="booking-card" data-price-month="<?php echo e($homestay->price_per_month ?? ''); ?>" data-price-year="<?php echo e($homestay->price_per_year ?? ''); ?>">
+                        <div class="booking-card" data-price-month="<?php echo e($homestay->price_per_month ?? ''); ?>" data-price-year="<?php echo e($homestay->price_per_year ?? ''); ?>" data-price-night="<?php echo e($homestay->price_per_night ?? ''); ?>">
                             <h4><?php echo e($homestay->name); ?></h4>
                             <?php if($homestay->price_per_month): ?>
                                 <p class="price">Mulai <strong>Rp <?php echo e(number_format($homestay->price_per_month, 0, ',', '.')); ?></strong> / bulan</p>
@@ -189,6 +207,7 @@ unset($__errorArgs, $__bag); ?>
                                     <select name="duration_unit" id="duration_unit" class="duration-unit">
                                         <option value="month">Bulan</option>
                                         <option value="year">Tahun</option>
+                                        <option value="night">Harian</option>
                                     </select>
                                     <?php $__errorArgs = ['duration'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -288,6 +307,7 @@ unset($__errorArgs, $__bag); ?>
 
             const pricePerMonth = parseFloat(form.closest('.booking-card').dataset.priceMonth) || 0;
             const pricePerYear = parseFloat(form.closest('.booking-card').dataset.priceYear) || 0;
+            const pricePerNight = parseFloat(form.closest('.booking-card').dataset.priceNight) || 0;
             const bookingDate = document.getElementById('booking_date');
             const durationEl = document.getElementById('duration');
             const durationUnit = document.getElementById('duration_unit');
@@ -317,16 +337,19 @@ unset($__errorArgs, $__bag); ?>
                 let unitPrice = 0;
                 if (unit === 'month') unitPrice = pricePerMonth;
                 if (unit === 'year') unitPrice = pricePerYear;
+                if (unit === 'night') unitPrice = pricePerNight;
 
                 if (!unitPrice || unitPrice <= 0) {
                     // price not set for chosen unit
-                    durationSummary.textContent = duration + ' ' + (unit === 'month' ? 'bulan' : 'tahun') + ' (harga belum diset)';
+                    const unitLabel = unit === 'month' ? 'bulan' : (unit === 'year' ? 'tahun' : 'hari');
+                    durationSummary.textContent = duration + ' ' + unitLabel + ' (harga belum diset)';
                     totalPriceEl.textContent = 'Rp -';
                     return false;
                 }
 
                 const total = Math.max(0, duration * unitPrice);
-                durationSummary.textContent = duration + ' ' + (unit === 'month' ? 'bulan' : 'tahun');
+                const unitLabel = unit === 'month' ? 'bulan' : (unit === 'year' ? 'tahun' : 'hari');
+                durationSummary.textContent = duration + ' ' + unitLabel;
                 totalPriceEl.textContent = 'Rp ' + formatRupiah(total);
                 return true;
             }
@@ -334,13 +357,23 @@ unset($__errorArgs, $__bag); ?>
             [bookingDate, durationEl, durationUnit, guests].forEach(el => el && el.addEventListener('change', updateSummary));
 
             form.addEventListener('submit', function (e) {
+                e.preventDefault();
                 const valid = updateSummary();
                 if (!valid) {
-                    e.preventDefault();
                     alert('Durasi tidak valid atau harga belum diset untuk unit yang dipilih.');
                     return false;
                 }
-                return true;
+
+                // Redirect to booking create page with query params so user completes booking flow there
+                const base = '<?php echo e(route('booking.create', $homestay->id)); ?>';
+                const params = new URLSearchParams();
+                if (bookingDate && bookingDate.value) params.set('booking_date', bookingDate.value);
+                if (durationEl && durationEl.value) params.set('duration', durationEl.value);
+                if (durationUnit && durationUnit.value) params.set('duration_unit', durationUnit.value);
+                if (guests && guests.value) params.set('total_guests', guests.value);
+
+                window.location.href = base + '?' + params.toString();
+                return false;
             });
 
             // Tabs: make clicks smooth and set active state

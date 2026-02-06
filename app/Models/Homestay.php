@@ -83,10 +83,14 @@ class Homestay extends Model
                 }
                 if (!empty($model->images) && is_array($model->images)) {
                     foreach ($model->images as $img) {
-                        try { \Illuminate\Support\Facades\Storage::disk('public')->delete($img); } catch (\Throwable $e) {}
+                        try {
+                            \Illuminate\Support\Facades\Storage::disk('public')->delete($img);
+                        } catch (\Throwable $e) {
+                        }
                     }
                 }
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         });
     }
 

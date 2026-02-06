@@ -15,7 +15,7 @@
             <h1>🏠 Pesan {{ $homestay->name }}</h1>
 
             <div class="booking-form-wrapper" data-price-month="{{ $homestay->price_per_month ?? '' }}"
-                data-price-year="{{ $homestay->price_per_year ?? '' }}">
+                data-price-year="{{ $homestay->price_per_year ?? '' }}" data-price-night="{{ $homestay->price_per_night ?? '' }}">
                 <div class="homestay-info">
                     @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
                         <img src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}">
@@ -28,6 +28,8 @@
                         <p class="price">Rp {{ number_format($homestay->price_per_month, 0, ',', '.') }} / bulan</p>
                     @elseif($homestay->price_per_year)
                         <p class="price">Rp {{ number_format($homestay->price_per_year, 0, ',', '.') }} / tahun</p>
+                    @elseif($homestay->price_per_night)
+                        <p class="price">Rp {{ number_format($homestay->price_per_night, 0, ',', '.') }} / malam</p>
                     @else
                         <p class="price text-muted">Harga belum tersedia</p>
                     @endif
@@ -49,7 +51,7 @@
 
                     <div class="form-group">
                         <label for="booking_date">📅 Tanggal Pemesanan</label>
-                        <input type="date" id="booking_date" name="booking_date" value="{{ old('booking_date') }}" required>
+                        <input type="date" id="booking_date" name="booking_date" value="{{ request()->query('booking_date') ?? old('booking_date') }}" required>
                         <small class="form-text text-muted">Cukup pilih tanggal pemesanan. Durasi dan harga akan ditentukan
                             oleh pemilik nanti.</small>
                     </div>
@@ -57,11 +59,12 @@
                     <div class="form-group">
                         <label for="duration">⏱️ Durasi</label>
                         <div class="duration-row">
-                            <input type="number" id="duration" name="duration" min="1" value="{{ old('duration', 1) }}"
+                            <input type="number" id="duration" name="duration" min="1" value="{{ request()->query('duration') ?? old('duration', 1) }}"
                                 class="form-control duration-input" required>
                             <select id="duration_unit" name="duration_unit" class="form-control duration-unit">
-                                <option value="month" {{ old('duration_unit') === 'month' ? 'selected' : '' }}>Bulan</option>
-                                <option value="year" {{ old('duration_unit') === 'year' ? 'selected' : '' }}>Tahun</option>
+                                <option value="month" {{ (request()->query('duration_unit') ?? old('duration_unit')) === 'month' ? 'selected' : '' }}>Bulan</option>
+                                <option value="year" {{ (request()->query('duration_unit') ?? old('duration_unit')) === 'year' ? 'selected' : '' }}>Tahun</option>
+                                <option value="night" {{ (request()->query('duration_unit') ?? old('duration_unit')) === 'night' ? 'selected' : '' }}>Harian</option>
                             </select>
                         </div>
                         <small class="form-text text-muted">Pilih durasi pemesanan (mis. 1 bulan, 12 bulan, atau 1
@@ -71,7 +74,7 @@
                     <div class="form-group">
                         <label for="total_guests">👥 Jumlah Tamu</label>
                         <input type="number" id="total_guests" name="total_guests" min="1" max="{{ $homestay->max_guests }}"
-                            value="{{ old('total_guests', 1) }}" required>
+                            value="{{ request()->query('total_guests') ?? old('total_guests', 1) }}" required>
                         <small>Kapasitas maksimal: {{ $homestay->max_guests }} tamu</small>
                     </div>
 
@@ -79,6 +82,36 @@
                         <label for="special_requests">💬 Permintaan Khusus (Opsional)</label>
                         <textarea id="special_requests" name="special_requests" rows="4"
                             placeholder="Tulis permintaan khusus Anda...">{{ old('special_requests') }}</textarea>
+                    </div>
+
+                    <hr style="margin: 30px 0;">
+                    <h3>📝 Data Diri Pemesan</h3>
+
+                    <div class="form-group">
+                        <label for="nama">👤 Nama Lengkap</label>
+                        <input type="text" id="nama" name="nama" value="{{ old('nama', auth()->user()->name ?? '') }}"
+                            required placeholder="Masukkan nama lengkap Anda">
+                        @error('nama')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">✉️ Email</label>
+                        <input type="email" id="email" name="email" value="{{ old('email', auth()->user()->email ?? '') }}"
+                            required placeholder="Masukkan email Anda">
+                        @error('email')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="nomor_hp">📱 Nomor Handphone</label>
+                        <input type="tel" id="nomor_hp" name="nomor_hp" value="{{ old('nomor_hp') }}" required
+                            placeholder="Contoh: 0812-3456-7890">
+                        @error('nomor_hp')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
 
                     <div class="price-summary">

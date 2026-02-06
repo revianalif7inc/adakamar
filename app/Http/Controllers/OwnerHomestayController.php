@@ -120,9 +120,14 @@ class OwnerHomestayController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
-                    $path = $file->store('homestays', 'public');
-                    if ($path)
-                        $extraImages[] = $path;
+                    try {
+                        $path = $file->store('homestays', 'public');
+                        if ($path) {
+                            $extraImages[] = $path;
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Owner gallery image storage error', ['error' => $e->getMessage()]);
+                    }
                 }
             }
         }
@@ -139,10 +144,23 @@ class OwnerHomestayController extends Controller
             if (!$file->isValid()) {
                 return back()->withErrors(['image_url' => 'File gambar tidak valid atau gagal diunggah.'])->withInput();
             }
-            $path = $file->store('homestays', 'public');
-            if ($path) {
-                $validated['image_url'] = $path;
+            try {
+                $path = $file->store('homestays', 'public');
+                if ($path) {
+                    $validated['image_url'] = $path;
+                } else {
+                    \Log::error('File store returned false (owner create)', ['original_name' => $file->getClientOriginalName()]);
+                    return back()->withErrors(['image_url' => 'Gagal menyimpan file gambar.'])->withInput();
+                }
+            } catch (\Exception $e) {
+                \Log::error('File storage error (owner create)', ['error' => $e->getMessage()]);
+                return back()->withErrors(['image_url' => 'Error: ' . $e->getMessage()])->withInput();
             }
+        }
+
+        // Ensure image_url is always set (at least nullable) for create
+        if (!isset($validated['image_url'])) {
+            $validated['image_url'] = null;
         }
 
         if (isset($validated['amenities']) && is_string($validated['amenities'])) {
@@ -235,9 +253,14 @@ class OwnerHomestayController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
-                    $path = $file->store('homestays', 'public');
-                    if ($path)
-                        $existing[] = $path;
+                    try {
+                        $path = $file->store('homestays', 'public');
+                        if ($path) {
+                            $existing[] = $path;
+                        }
+                    } catch (\Exception $e) {
+                        \Log::error('Owner gallery image storage error (update)', ['error' => $e->getMessage()]);
+                    }
                 }
             }
         }
@@ -256,15 +279,32 @@ class OwnerHomestayController extends Controller
 
         $validated['images'] = array_values(array_unique($existing));
 
+        // Preserve or update primary image URL
         if ($request->hasFile('image_url')) {
             $file = $request->file('image_url');
             if (!$file->isValid()) {
                 return back()->withErrors(['image_url' => 'File gambar tidak valid atau gagal diunggah.'])->withInput();
             }
-            $path = $file->store('homestays', 'public');
-            if ($path) {
-                $validated['image_url'] = $path;
+            try {
+                $path = $file->store('homestays', 'public');
+                if ($path) {
+                    $validated['image_url'] = $path;
+                } else {
+                    \Log::error('File store returned false (owner update)', ['original_name' => $file->getClientOriginalName()]);
+                }
+            } catch (\Exception $e) {
+                \Log::error('File storage error (owner update)', ['error' => $e->getMessage()]);
             }
+        } else {
+            // If no new image_url uploaded, preserve the existing one
+            if (!isset($validated['image_url']) && $homestay->image_url) {
+                $validated['image_url'] = $homestay->image_url;
+            }
+        }
+
+        // Ensure image_url is set (preserve existing even if not in validated)
+        if (!isset($validated['image_url'])) {
+            $validated['image_url'] = $homestay->image_url ?? null;
         }
 
         if (isset($validated['amenities']) && is_string($validated['amenities'])) {

@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const pricePerMonth = parseFloat(wrapper.dataset.priceMonth || 0);
     const pricePerYear = parseFloat(wrapper.dataset.priceYear || 0);
+    const pricePerNight = parseFloat(wrapper.dataset.priceNight || 0);
 
     function formatRupiah(value) {
         return 'Rp ' + value.toLocaleString('id-ID');
@@ -24,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 total = duration * pricePerMonth;
             } else if (unit === 'year' && pricePerYear > 0) {
                 total = duration * pricePerYear;
+            } else if (unit === 'night' && pricePerNight > 0) {
+                total = duration * pricePerNight;
             }
         }
 

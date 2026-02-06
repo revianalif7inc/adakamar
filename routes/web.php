@@ -31,6 +31,25 @@ if (app()->environment('local', 'testing')) {
         \Illuminate\Support\Facades\Log::info('debug_kamar invoked', ['path' => request()->path(), 'query' => request()->query()]);
         return response('debug-ok');
     });
+
+    // Debug homestay images
+    Route::get('/__debug_homestays', function () {
+        $homestays = \App\Models\Homestay::limit(10)->get();
+        $html = '<h1>Homestay Debug</h1><style>table{border-collapse:collapse} td{border:1px solid #ccc;padding:10px} .red{color:red;font-weight:bold} .green{color:green;font-weight:bold}</style>';
+        $html .= '<table><tr><th>ID</th><th>Name</th><th>image_url in DB</th><th>File Exists</th><th>URL</th><th>Action</th></tr>';
+
+        foreach ($homestays as $h) {
+            $exists = $h->image_url && \Illuminate\Support\Facades\Storage::disk('public')->exists($h->image_url) ? 'YES' : 'NO';
+            $existsClass = $exists === 'YES' ? 'green' : 'red';
+            $url = $h->image_url ? asset('storage/' . $h->image_url) : 'N/A';
+            $link = $h->image_url ? "<a href=\"{$url}\" target=\"_blank\">View</a>" : 'N/A';
+            $action = "<a href=\"/admin/kamar/{$h->id}/edit\">Edit</a>";
+            $html .= "<tr><td>{$h->id}</td><td>{$h->name}</td><td><code>{$h->image_url}</code></td><td><span class=\"{$existsClass}\">{$exists}</span></td><td>{$link}</td><td>{$action}</td></tr>";
+        }
+
+        $html .= '</table>';
+        return response($html)->header('Content-Type', 'text/html');
+    });
 }
 Route::get('/kamar', [HomestayController::class, 'index'])->name('kamar.index');
 

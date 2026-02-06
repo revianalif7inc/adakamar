@@ -25,17 +25,20 @@ class BookingController extends Controller
         $validated = $request->validate([
             'homestay_id' => 'required|exists:homestays,id',
             'booking_date' => 'required|date|after_or_equal:today',
-            'duration_unit' => 'required|in:month,year',
+            'duration_unit' => 'required|in:month,year,night',
             'duration' => 'required|integer|min:1|max:120',
             'total_guests' => 'required|integer|min:1',
             'special_requests' => 'nullable|string',
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'nomor_hp' => 'required|string|max:20',
         ]);
 
         $homestay = Homestay::findOrFail($validated['homestay_id']);
 
         $bookingDate = \Carbon\Carbon::parse($validated['booking_date']);
 
-        // Monthly/yearly pricing (flow B)
+        // Pricing based on selected unit (month, year, night)
         $duration = (int) $validated['duration'];
         $unit = $validated['duration_unit'];
         $totalPrice = 0;
@@ -47,12 +50,19 @@ class BookingController extends Controller
             }
             $totalPrice = (float) $homestay->price_per_month * $duration;
             $checkOutDate = $bookingDate->copy()->addMonthsNoOverflow($duration)->toDateString();
-        } else {
+        } elseif ($unit === 'year') {
             if (empty($homestay->price_per_year)) {
                 return back()->withInput()->withErrors(['duration' => 'Homestay tidak memiliki harga tahunan.']);
             }
             $totalPrice = (float) $homestay->price_per_year * $duration;
             $checkOutDate = $bookingDate->copy()->addYears($duration)->toDateString();
+        } else {
+            // night/day pricing
+            if (empty($homestay->price_per_night)) {
+                return back()->withInput()->withErrors(['duration' => 'Homestay tidak memiliki harga harian.']);
+            }
+            $totalPrice = (float) $homestay->price_per_night * $duration;
+            $checkOutDate = $bookingDate->copy()->addDays($duration)->toDateString();
         }
 
         $booking = Booking::create([
@@ -64,6 +74,9 @@ class BookingController extends Controller
             'total_price' => $totalPrice,
             'status' => 'pending',
             'special_requests' => $validated['special_requests'] ?? null,
+            'nama' => $validated['nama'],
+            'email' => $validated['email'],
+            'nomor_hp' => $validated['nomor_hp'],
         ]);
 
         return redirect()->route('booking.confirmation', $booking->id)

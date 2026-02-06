@@ -47,15 +47,6 @@
                         <p class="stat-number">{{ $pendingBookings }}</p>
                     </div>
                 </div>
-                <div class="stat-card stat-card-revenue">
-                    <div class="stat-icon">
-                        <i class="fas fa-money-bill-wave"></i>
-                    </div>
-                    <div class="stat-content">
-                        <h3>Total Pendapatan</h3>
-                        <p class="stat-number">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
-                    </div>
-                </div>
             </div>
 
             <!-- Management Sections -->

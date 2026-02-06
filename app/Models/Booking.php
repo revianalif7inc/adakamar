@@ -18,6 +18,9 @@ class Booking extends Model
         'total_price',
         'status', // pending, confirmed, cancelled, completed
         'special_requests',
+        'nama',
+        'email',
+        'nomor_hp',
     ];
 
     protected $casts = [

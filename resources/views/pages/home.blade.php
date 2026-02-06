@@ -30,7 +30,7 @@
 
                 <div class="hero-right d-none d-md-block">
                     <div class="hero-visual" aria-hidden="true">
-                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="Ilustrasi homestay">
+                        <img src="{{ asset('images/homestays/placeholder.jpg') }}" alt="Ilustrasi homestay">
                     </div>
                 </div>
             </div>
@@ -225,14 +225,14 @@
             <div class="about-wrapper">
                 <div class="about-image animate-on-scroll">
                     <div class="about-image-container">
-                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="Villa Ada Kamar" class="about-main-image">
+                        <img src="{{ asset('images/homestays/villaplaceholder.jpg') }}" alt="Villa Ada Kamar" class="about-main-image">
                         <div class="about-image-overlay"></div>
                     </div>
                 </div>
                 
                 <div class="about-text-content animate-on-scroll">
                     <div class="about-heading">
-                        <h2 class="about-title">Apa itu <span class="highlight-text">Villa Ada Kamar</span>?</h2>
+                        <h2 class="about-title">Apa itu <span class="highlight-text">Ada Kamar</span>?</h2>
                     </div>
                     
                     <p class="about-description">
@@ -257,7 +257,7 @@
             <div class="owner-wrapper">
                 <div class="owner-image animate-on-scroll">
                     <div class="owner-image-container">
-                        <img src="{{ asset('images/homestays/placeholder.svg') }}" alt="Jadilah Owner AdaKamar" class="owner-main-image">
+                        <img src="{{ asset('images/homestays/woman.jpg') }}" alt="Jadilah Owner AdaKamar" class="owner-main-image">
                     </div>
                 </div>
                 

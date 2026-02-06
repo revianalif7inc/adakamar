@@ -39,7 +39,8 @@
                         <thead>
                             <tr>
                                 <th width="60">ID</th>
-                                <th>Tamu</th>
+                                <th>Pemesan</th>
+                                <th>Kontak</th>
                                 <th>Kamar</th>
                                 <th width="100">Check-In</th>
                                 <th width="100">Check-Out</th>
@@ -54,8 +55,14 @@
                                     <td><strong>#{{ $booking->id }}</strong></td>
                                     <td>
                                         <div class="user-info">
-                                            <p class="user-name">{{ $booking->user->name }}</p>
+                                            <p class="user-name">{{ $booking->nama ?? $booking->user->name }}</p>
                                             <p class="user-email">{{ $booking->user->email }}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="contact-info">
+                                            <p>{{ $booking->email ?? '—' }}</p>
+                                            <p><a href="tel:{{ $booking->nomor_hp }}">{{ $booking->nomor_hp ?? '—' }}</a></p>
                                         </div>
                                     </td>
                                     <td>
@@ -89,7 +96,7 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <a href="{{ route('owner.bookings.index') }}" class="btn btn-xs btn-info"
+                                        <a href="{{ route('booking.show', $booking->id) }}" class="btn btn-xs btn-info"
                                             title="Detail">
                                             <i class="fas fa-eye"></i>
                                         </a>
@@ -97,7 +104,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center empty-state">
+                                    <td colspan="9" class="text-center empty-state">
                                         <i class="fas fa-calendar empty-icon"></i>
                                         <p class="text-muted">Tidak ada pemesanan</p>
                                     </td>
