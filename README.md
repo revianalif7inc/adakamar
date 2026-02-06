@@ -264,4 +264,4 @@ Untuk pertanyaan atau saran, hubungi kami melalui:
 
 ---
 
-**Made with ❤️ by AdaKamar Team**
+**Made with ❤️ by RevianAlif Team**
