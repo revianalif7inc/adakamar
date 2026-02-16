@@ -8,10 +8,9 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    // Show booking form
-    public function create($homestay_id)
+    // Show booking form (accept Homestay via route model binding)
+    public function create(Homestay $homestay)
     {
-        $homestay = Homestay::findOrFail($homestay_id);
         return view('booking.create', compact('homestay'));
     }
 
@@ -84,9 +83,9 @@ class BookingController extends Controller
     }
 
     // Show booking confirmation
-    public function confirmation($id)
+    public function confirmation(Booking $booking)
     {
-        $booking = Booking::with('homestay', 'user')->findOrFail($id);
+        $booking->load('homestay', 'user');
 
         // Only booking owner or admin can view confirmation
         if (auth()->id() !== $booking->user_id && !auth()->user()->isAdmin()) {
@@ -113,9 +112,9 @@ class BookingController extends Controller
     }
 
     // Show a simple payment form/confirmation (placeholder)
-    public function payForm($id)
+    public function payForm(Booking $booking)
     {
-        $booking = Booking::with('homestay')->findOrFail($id);
+        $booking->load('homestay');
         if (auth()->id() !== $booking->user_id) {
             abort(403);
         }
@@ -127,9 +126,9 @@ class BookingController extends Controller
     }
 
     // Show booking detail (for booking owner, homestay owner, and admins)
-    public function show($id)
+    public function show(Booking $booking)
     {
-        $booking = Booking::with('homestay.owner', 'user')->findOrFail($id);
+        $booking->load('homestay.owner', 'user');
 
         $user = auth()->user();
         $isBookingOwner = $user && $user->id === $booking->user_id;
@@ -144,9 +143,9 @@ class BookingController extends Controller
     }
 
     // Process payment (placeholder - marks as confirmed)
-    public function pay(Request $request, $id)
+    public function pay(Request $request, Booking $booking)
     {
-        $booking = Booking::findOrFail($id);
+        $booking->load('user');
         if (auth()->id() !== $booking->user_id) {
             abort(403);
         }

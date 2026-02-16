@@ -15,9 +15,9 @@
                             <input type="text" name="search" class="form-control search-input"
                                 placeholder="Cari kamar, lokasi, atau fasilitas..." value="<?php echo e(request('search')); ?>">
 
-                            <select name="location_id" class="form-select search-select">
+                            <select name="location_id" class="form-select search-select" id="homeLocationSelect">
                                 <option value="">Semua Lokasi</option>
-                                <?php $__currentLoopData = $locations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $loc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php $__currentLoopData = $topLocations; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $loc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($loc->id); ?>" <?php echo e(request('location_id') == $loc->id ? 'selected' : ''); ?>>
                                         <?php echo e($loc->name); ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -50,7 +50,7 @@
             <div class="kamar-grid">
                 <?php $__empty_1 = true; $__currentLoopData = $featuredHomestays->take(6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $homestay): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                     <div class="kamar-card card-item h-100 shadow-sm animate-on-scroll">
-                        <a class="card-link" href="<?php echo e(route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? ''])); ?>">
+                        <a class="card-link" href="<?php echo e(route('kamar.show', $homestay)); ?>">
                             <div class="kamar-image card-image">
                                 <?php if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url)): ?>
                                     <img loading="lazy" src="<?php echo e(asset('storage/' . $homestay->image_url)); ?>" alt="<?php echo e($homestay->name); ?>">
@@ -83,9 +83,9 @@
                         </a>
 
                         <div class="kamar-actions p-3 d-flex gap-2 justify-content-center">
-                            <a href="<?php echo e(route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? ''])); ?>" class="btn btn-detail">Lihat Detail</a>
+                            <a href="<?php echo e(route('kamar.show', $homestay)); ?>" class="btn btn-detail">Lihat Detail</a>
                             <?php if(auth()->guard()->check()): ?>
-                                <a href="<?php echo e(route('booking.create', $homestay->id)); ?>" class="btn btn-pesan">Pesan</a>
+                                <a href="<?php echo e(route('booking.create', $homestay->slug)); ?>" class="btn btn-pesan">Pesan</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
 
                 <div class="cards-track" role="list">
                     <?php $__empty_1 = true; $__currentLoopData = $jogjaTopHomestays; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $h): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                        <a class="card-item" href="<?php echo e(route('kamar.show', ['id' => $h->id, 'slug' => $h->slug ?? ''])); ?>">
+                        <a class="card-item" href="<?php echo e(route('kamar.show', $h)); ?>">
                             <div class="card-image">
                                 <?php if(!empty($h->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($h->image_url)): ?>
                                     <img loading="lazy" src="<?php echo e(asset('storage/' . $h->image_url)); ?>" alt="<?php echo e($h->name); ?>">
@@ -290,5 +290,22 @@
 
 <?php $__env->startSection('js'); ?>
     <script src="<?php echo e(asset('js/card-slider.js')); ?>"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationSelect = document.getElementById('homeLocationSelect');
+            if (locationSelect) {
+                // Set size to force dropdown to show all options and open downward
+                locationSelect.addEventListener('mousedown', function(e) {
+                    this.size = Math.min(6, this.options.length);
+                });
+                locationSelect.addEventListener('change', function() {
+                    this.size = 0; // Reset to normal
+                });
+                locationSelect.addEventListener('blur', function() {
+                    this.size = 0; // Reset to normal
+                });
+            }
+        });
+    </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\adakamar\resources\views/pages/home.blade.php ENDPATH**/ ?>

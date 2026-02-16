@@ -224,6 +224,11 @@
     min-width: 240px;
     padding:14px 16px !important;
     font-size:1rem;
+    direction: ltr;
+}
+
+#homeLocationSelect{
+    direction: ltr !important;
 }
 
 /* Animation utilities */

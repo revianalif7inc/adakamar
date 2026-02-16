@@ -69,23 +69,20 @@ class HomestayController extends Controller
         $homestays = $query->paginate(12)->appends(request()->except('page'));
 
         // Also load categories with counts so the Kamar listing can show category filters
-        $categories = Category::withCount('homestays')->orderBy('sort_order', 'asc')->get();
+        // Only show top 10 categories sorted by homestay count (descending)
+        $categories = Category::withCount('homestays')
+            ->orderBy('homestays_count', 'desc')
+            ->limit(10)
+            ->get();
         $locations = Location::orderBy('name')->get();
 
         return view('pages.kamar', compact('homestays', 'categories', 'locations'));
     }
 
-    // Show single homestay detail
-    public function show($id)
+    // Show single homestay detail (route model binding by slug)
+    public function show(Homestay $homestay)
     {
-        $slug = request()->route('slug');
-        $homestay = Homestay::with('owner', 'category', 'location')->findOrFail($id);
-
-        // Redirect to canonical URL only if slug is provided but doesn't match
-        if ($slug && $homestay->slug && $slug !== $homestay->slug) {
-            return redirect()->route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug], 301);
-        }
-
+        $homestay->load('owner', 'category', 'location');
         $reviews = $homestay->reviews()->latest()->get();
         $userReview = auth()->check() ? $homestay->reviews()->where('user_id', auth()->id())->first() : null;
 

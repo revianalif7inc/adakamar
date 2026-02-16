@@ -54,11 +54,11 @@
             <h3><i class="fas fa-folder"></i> Kategori Artikel</h3>
             <div class="widget-body">
                 <ul class="categories-list">
-                    @foreach(\App\Models\ArticleCategory::orderBy('name', 'asc')->get() as $c)
+                    @foreach(\App\Models\ArticleCategory::withCount('articles')->orderBy('articles_count', 'desc')->limit(5)->get() as $c)
                         <li>
                             <a href="{{ route('artikel.category', $c->slug) }}">
                                 <span>{{ $c->name }}</span>
-                                <span class="count">{{ $c->articles()->count() }}</span>
+                                <span class="count">{{ $c->articles_count }}</span>
                             </a>
                         </li>
                     @endforeach

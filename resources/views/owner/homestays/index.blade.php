@@ -113,8 +113,8 @@
 
                                 <div class="kamar-card-footer">
                                     <div class="kamar-actions">
-                                        <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}"
-                                            target="_blank" class="btn btn-sm btn-outline">
+                                        <a href="{{ route('kamar.show', $homestay->slug) }}" target="_blank"
+                                            class="btn btn-sm btn-outline">
                                             <i class="fas fa-eye"></i> Lihat
                                         </a>
                                         <a href="{{ route('owner.kamar.edit', $homestay->id) }}" class="btn btn-sm btn-edit">

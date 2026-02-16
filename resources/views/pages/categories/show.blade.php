@@ -20,7 +20,7 @@
                     "@type" => "ListItem",
                     "position" => $i + 1,
                     "item" => [
-                        "@id" => route('kamar.show', ['id' => $h->id, 'slug' => $h->slug ?? '']),
+                        "@id" => route('kamar.show', $h->slug),
                         "name" => $h->name,
                         "image" => !empty($h->image_url) ? asset('storage/' . $h->image_url) : asset('images/homestays/placeholder.svg'),
                         "description" => \Illuminate\Support\Str::limit($h->description ?? '', 120),
@@ -115,7 +115,7 @@
 
                                     <!-- Actions -->
                                     <div class="card-actions">
-                                        <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}"
+                                        <a href="{{ route('kamar.show', $homestay->slug) }}"
                                             class="btn btn-view-detail">
                                             <span>Lihat Detail</span> <i class="fas fa-arrow-right"></i>
                                         </a>

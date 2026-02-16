@@ -96,7 +96,7 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <a href="{{ route('booking.show', $booking->id) }}" class="btn btn-xs btn-info"
+                                        <a href="{{ route('booking.show', $booking->slug) }}" class="btn btn-xs btn-info"
                                             title="Detail">
                                             <i class="fas fa-eye"></i>
                                         </a>

@@ -57,8 +57,7 @@
                             </div>
                         </div>
 
-                        <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}"
-                            class="btn btn-primary">Lihat Detail</a>
+                        <a href="{{ route('kamar.show', $homestay->slug) }}" class="btn btn-primary">Lihat Detail</a>
                     </div>
                 @empty
                     <p class="no-results">Tidak ada kamar yang ditemukan</p>

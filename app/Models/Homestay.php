@@ -211,4 +211,12 @@ class Homestay extends Model
     {
         return $this->hasMany(Review::class);
     }
+
+    /**
+     * Use `slug` for route model binding so URLs can use human-friendly slugs.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 }

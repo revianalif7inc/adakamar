@@ -12,6 +12,7 @@ class Booking extends Model
     protected $fillable = [
         'user_id',
         'homestay_id',
+        'slug',
         'check_in_date',
         'check_out_date',
         'total_guests',
@@ -51,5 +52,47 @@ class Booking extends Model
     public function homestay()
     {
         return $this->belongsTo(Homestay::class);
+    }
+
+    /**
+     * Generate unique slug for booking on create/save.
+     */
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (empty($model->slug)) {
+                $model->slug = static::generateUniqueSlugForModel($model);
+            }
+        });
+
+        static::saving(function ($model) {
+            if (empty($model->slug)) {
+                $model->slug = static::generateUniqueSlugForModel($model);
+            }
+        });
+    }
+
+    protected static function generateUniqueSlugForModel($model)
+    {
+        $base = 'booking-' . ($model->id ?? time());
+        // prefer customer name if available
+        if (!empty($model->nama)) {
+            $base = \Illuminate\Support\Str::slug($model->nama) . '-' . ($model->id ?? time());
+        }
+
+        $slug = $base;
+        $i = 1;
+        while (static::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $i++;
+        }
+        return $slug;
+    }
+
+    /**
+     * Use `slug` for route model binding so booking links can use slugs.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

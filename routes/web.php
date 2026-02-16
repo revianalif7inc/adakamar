@@ -54,11 +54,11 @@ if (app()->environment('local', 'testing')) {
 Route::get('/kamar', [HomestayController::class, 'index'])->name('kamar.index');
 
 // Reviews
-Route::post('/kamar/{id}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
-Route::get('/kamar/{id}/{slug?}', [HomestayController::class, 'show'])->name('kamar.show');
+Route::post('/kamar/{homestay}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store')->middleware('auth');
+Route::get('/kamar/{homestay}', [HomestayController::class, 'show'])->name('kamar.show');
 // English aliases for compatibility with some views
 Route::get('/homestays', [HomestayController::class, 'index'])->name('homestays.index');
-Route::get('/homestays/{id}/{slug?}', [HomestayController::class, 'show'])->name('homestays.show');
+Route::get('/homestays/{homestay}', [HomestayController::class, 'show'])->name('homestays.show');
 
 // Articles
 Route::get('/artikel', [ArticleController::class, 'index'])->name('artikel.index');
@@ -70,15 +70,15 @@ Route::get('/kategori', [\App\Http\Controllers\CategoryController::class, 'publi
 Route::get('/kategori/{slug}', [\App\Http\Controllers\CategoryController::class, 'show'])->name('categories.show');
 
 Route::middleware([\App\Http\Middleware\Authenticate::class])->group(function () {
-    Route::get('/booking/{homestay_id}', [BookingController::class, 'create'])->name('booking.create');
+    Route::get('/booking/{homestay}', [BookingController::class, 'create'])->name('booking.create');
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    Route::get('/booking/confirmation/{id}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+    Route::get('/booking/confirmation/{booking}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
 
     // Customer: My Rooms (bookings) and simple payment flow
     Route::get('/kamar-saya', [BookingController::class, 'myRooms'])->name('booking.my_rooms');
-    Route::get('/bookings/{id}', [BookingController::class, 'show'])->name('booking.show');
-    Route::get('/booking/{id}/pay', [BookingController::class, 'payForm'])->name('booking.pay.form');
-    Route::post('/booking/{id}/pay', [BookingController::class, 'pay'])->name('booking.pay');
+    Route::get('/bookings/{booking}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/booking/{booking}/pay', [BookingController::class, 'payForm'])->name('booking.pay.form');
+    Route::post('/booking/{booking}/pay', [BookingController::class, 'pay'])->name('booking.pay');
 });
 
 // Authentication Routes
@@ -105,8 +105,8 @@ Route::middleware([\App\Http\Middleware\Authenticate::class, \App\Http\Middlewar
 
     // Booking Management
     Route::get('/bookings', [BookingController::class, 'adminIndex'])->name('bookings.index');
-    Route::put('/bookings/{id}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
-    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    Route::put('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.updateStatus');
+    Route::delete('/bookings/{booking}', [BookingController::class, 'destroy'])->name('bookings.destroy');
 
     // Category & Location management
     Route::resource('categories', \App\Http\Controllers\CategoryController::class)->except(['show']);
@@ -138,7 +138,7 @@ Route::middleware([\App\Http\Middleware\Authenticate::class, \App\Http\Middlewar
 
     // Owner booking management (confirm paid bookings)
     Route::get('/bookings', [\App\Http\Controllers\OwnerBookingController::class, 'index'])->name('bookings.index');
-    Route::put('/bookings/{id}/status', [\App\Http\Controllers\OwnerBookingController::class, 'updateStatus'])->name('bookings.updateStatus');
+    Route::put('/bookings/{booking}/status', [\App\Http\Controllers\OwnerBookingController::class, 'updateStatus'])->name('bookings.updateStatus');
 });
 
 // Owner Profile - Public (MUST be after protected owner routes to avoid conflicts)

@@ -7,38 +7,22 @@
     @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
-<div class="form-group">
-    <label for="slug">Slug (opsional)</label>
-    <input type="text" id="slug" name="slug" class="form-control @error('slug') is-invalid @enderror" 
-        value="{{ old('slug', $homestay->slug ?? '') }}" placeholder="Contoh: kamar-manikam-1">
-    <small class="form-text">Jika dikosongkan, sistem akan membuat slug otomatis dari nama.</small>
-    @error('slug')<div class="invalid-feedback">{{ $message }}</div>@enderror
-</div>
 
 <div class="form-row">
     <div class="form-group">
-        <label for="categories">Kategori * (pilih lebih dari satu)</label>
-        <select id="categories" name="categories[]" class="form-control @error('categories') is-invalid @enderror" multiple required>
+        <label for="categories">Kategori *</label>
+        <select id="categories" name="category_id" class="form-control @error('category_id') is-invalid @enderror" required>
+            <option value="">-- Pilih Kategori --</option>
             @php 
-                $selected = old('categories', isset($homestay) && $homestay->categories ? $homestay->categories->pluck('id')->toArray() : []);
+                $selected = old('category_id', isset($homestay) && $homestay->categories ? $homestay->categories->first()->id : '');
             @endphp
             @foreach($categories as $cat)
-                <option value="{{ $cat->id }}" {{ in_array($cat->id, (array) $selected) ? 'selected' : '' }}>
+                <option value="{{ $cat->id }}" {{ ($selected == $cat->id) ? 'selected' : '' }}>
                     {{ $cat->name }}
                 </option>
             @endforeach
         </select>
-        <small class="form-text">Gunakan Ctrl/Cmd atau Shift untuk memilih beberapa kategori.</small>
-        @error('categories')<div class="invalid-feedback">{{ $message }}</div>@enderror
-
-        <div class="form-text mt-2">Atau ketik kategori baru:</div>
-        <input list="category-list" name="category_name" id="category_name" class="form-control mt-1"
-            placeholder="Contoh: Kost" value="{{ old('category_name', '') }}">
-        <datalist id="category-list">
-            @foreach($categories as $cat)
-                <option value="{{ $cat->name }}"></option>
-            @endforeach
-        </datalist>
+        @error('category_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
     <div class="form-group">
@@ -59,7 +43,7 @@
     <label for="address">Alamat Lengkap</label>
     <input type="text" id="address" name="address" class="form-control @error('address') is-invalid @enderror" 
         value="{{ old('address', $homestay->location ?? '') }}" placeholder="Masukkan alamat lengkap yang akan tampil di listing">
-    <small class="form-text">Contoh: Jalan, RT/RW, Desa/Kelurahan (opsional)</small>
+    <small class="form-text">Contoh: Jalan, RT/RW, Desa/Kelurahan</small>
     @error('address')<div class="invalid-feedback">{{ $message }}</div>@enderror
 </div>
 
@@ -84,7 +68,7 @@
         <label for="price_per_night">Harga per Malam (Rp)</label>
         <input type="number" id="price_per_night" name="price_per_night" class="form-control @error('price_per_night') is-invalid @enderror" 
             value="{{ old('price_per_night', $homestay->price_per_night ?? '') }}" step="1000" min="0">
-        <small class="form-text text-muted">Opsional — harga per malam</small>
+        <small class="form-text text-muted">harga per malam</small>
         @error('price_per_night')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
@@ -92,7 +76,7 @@
         <label for="price_per_month">Harga per Bulan (Rp)</label>
         <input type="number" id="price_per_month" name="price_per_month" class="form-control @error('price_per_month') is-invalid @enderror" 
             value="{{ old('price_per_month', $homestay->price_per_month ?? '') }}" step="1000" min="0">
-        <small class="form-text text-muted">Opsional — untuk kost/jangka panjang</small>
+        <small class="form-text text-muted">untuk kost/jangka panjang</small>
         @error('price_per_month')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
@@ -100,7 +84,7 @@
         <label for="price_per_year">Harga per Tahun (Rp)</label>
         <input type="number" id="price_per_year" name="price_per_year" class="form-control @error('price_per_year') is-invalid @enderror" 
             value="{{ old('price_per_year', $homestay->price_per_year ?? '') }}" step="1000" min="0">
-        <small class="form-text text-muted">Opsional — untuk sewa tahunan</small>
+        <small class="form-text text-muted">untuk sewa tahunan</small>
         @error('price_per_year')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 </div>

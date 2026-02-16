@@ -85,8 +85,6 @@
                         </ul>
 
                         <div class="confirm-actions">
-                            <button onclick="window.print()" class="btn btn-primary"><i class="fa fa-print btn-icon"
-                                    aria-hidden="true"></i> Cetak Bukti</button>
 
                             @if(!empty($booking->homestay->owner->phone))
                                 <a href="tel:{{ $booking->homestay->owner->phone }}" class="btn btn-secondary"><i

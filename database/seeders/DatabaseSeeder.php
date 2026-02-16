@@ -160,6 +160,73 @@ class DatabaseSeeder extends Seeder
         ]);
         $h1->categories()->attach($cat_villa->id);
 
+        // Additional Yogyakarta homestays for slider
+        $h1b = Homestay::create([
+            'owner_id' => $owner1->id,
+            'location_id' => $loc_yogya->id,
+            'name' => 'Kost Taman Sari Jogja',
+            'slug' => 'kost-taman-sari-jogja',
+            'description' => 'Kost nyaman dekat dengan universitas dan pusat belanja. Ideal untuk mahasiswa dan karyawan muda dengan fasilitas terlengkap.',
+            'location' => 'Jl. Taman Sari, Yogyakarta',
+            'price_per_night' => 150000,
+            'price_per_month' => 2500000,
+            'price_per_year' => 25000000,
+            'max_guests' => 2,
+            'bedrooms' => 1,
+            'bathrooms' => 1,
+            'image_url' => null,
+            'images' => [],
+            'amenities' => ['WiFi', 'AC', 'Keamanan 24 Jam', 'Dapur Bersama'],
+            'rating' => 4.6,
+            'is_active' => true,
+            'is_featured' => false,
+        ]);
+        $h1b->categories()->attach($cat_kost->id);
+
+        $h1c = Homestay::create([
+            'owner_id' => $owner2->id,
+            'location_id' => $loc_yogya->id,
+            'name' => 'Rumah Jogja Heritage',
+            'slug' => 'rumah-jogja-heritage',
+            'description' => 'Rumah tradisional Jogja yang didesain ulang modern. Sempurna untuk keluarga yang menghargai budaya lokal dengan kenyamanan modern.',
+            'location' => 'Jl. Ketandan, Yogyakarta',
+            'price_per_night' => 400000,
+            'price_per_month' => 8000000,
+            'price_per_year' => 80000000,
+            'max_guests' => 8,
+            'bedrooms' => 4,
+            'bathrooms' => 3,
+            'image_url' => null,
+            'images' => [],
+            'amenities' => ['WiFi', 'Taman', 'Dapur Lengkap', 'Parkir', 'Ruang Keluarga', 'AC'],
+            'rating' => 4.7,
+            'is_active' => true,
+            'is_featured' => false,
+        ]);
+        $h1c->categories()->attach($cat_villa->id);
+
+        $h1d = Homestay::create([
+            'owner_id' => $owner2->id,
+            'location_id' => $loc_yogya->id,
+            'name' => 'Apartemen Malioboro Plaza',
+            'slug' => 'apartemen-malioboro-plaza',
+            'description' => 'Apartemen modern di pusat Malioboro. Lokasi strategis dengan akses mudah ke belanja dan hiburan untuk bisnis atau liburan.',
+            'location' => 'Jl. Malioboro, Yogyakarta',
+            'price_per_night' => 250000,
+            'price_per_month' => 5000000,
+            'price_per_year' => 50000000,
+            'max_guests' => 4,
+            'bedrooms' => 2,
+            'bathrooms' => 1,
+            'image_url' => null,
+            'images' => [],
+            'amenities' => ['WiFi', 'AC', 'Lift', 'Keamanan', 'Parkir Tertutup'],
+            'rating' => 4.5,
+            'is_active' => true,
+            'is_featured' => false,
+        ]);
+        $h1d->categories()->attach($cat_apartment->id);
+
         $h2 = Homestay::create([
             'owner_id' => $owner1->id,
             'location_id' => $loc_bandung->id,

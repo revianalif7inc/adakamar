@@ -46,25 +46,8 @@
     </div>
 
     @section('css')
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css">
     @endsection
 
     @section('js')
-        <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.querySelectorAll('select[name="categories[]"]').forEach(function (el) {
-                    if (!el.classList.contains('choices-initialized')) {
-                        new Choices(el, {
-                            removeItemButton: true,
-                            searchEnabled: true,
-                            shouldSort: false,
-                            placeholderValue: 'Pilih kategori...'
-                        });
-                        el.classList.add('choices-initialized');
-                    }
-                });
-            });
-        </script>
     @endsection
 @endsection

@@ -244,12 +244,12 @@
 
                                             <!-- Action Buttons -->
                                             <div class="card-actions">
-                                                <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}" class="btn-action btn-detail">
+                                                <a href="{{ route('kamar.show', $homestay->slug) }}" class="btn-action btn-detail">
                                                     <i class="fas fa-eye"></i>
                                                     <span>Lihat Detail</span>
                                                 </a>
                                                 @auth
-                                                    <a href="{{ route('booking.create', $homestay->id) }}" class="btn-action btn-pesan">
+                                                    <a href="{{ route('booking.create', $homestay->slug) }}" class="btn-action btn-pesan">
                                                         <i class="fas fa-envelope"></i>
                                                         <span>Pesan</span>
                                                     </a>

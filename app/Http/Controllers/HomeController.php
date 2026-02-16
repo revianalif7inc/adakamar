@@ -70,8 +70,16 @@ class HomeController extends Controller
                 ->get();
         });
 
-        // Load locations for homepage search select
-        $locations = \App\Models\Location::orderBy('name')->get();
+        // Load locations for homepage search select - all locations
+        $allLocations = \App\Models\Location::orderBy('name')->get();
+
+        // Top 5 locations by homestay count
+        $topLocations = Cache::remember('home:top_locations', 300, function () {
+            return \App\Models\Location::withCount('homestays')
+                ->orderBy('homestays_count', 'desc')
+                ->limit(5)
+                ->get();
+        });
 
         // Cheapest homestays (by effective price: prefer monthly then yearly)
         $cheapestHomestays = Cache::remember('home:cheapest_homestays', 300, function () {
@@ -84,6 +92,6 @@ class HomeController extends Controller
                 ->get();
         });
 
-        return view('pages.home', compact('homestays', 'featuredHomestays', 'jogjaTopHomestays', 'categories', 'testimonials', 'locations', 'cheapestHomestays'));
+        return view('pages.home', compact('homestays', 'featuredHomestays', 'jogjaTopHomestays', 'categories', 'testimonials', 'allLocations', 'topLocations', 'cheapestHomestays'));
     }
 }

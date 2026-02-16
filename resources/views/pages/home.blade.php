@@ -15,9 +15,9 @@
                             <input type="text" name="search" class="form-control search-input"
                                 placeholder="Cari kamar, lokasi, atau fasilitas..." value="{{ request('search') }}">
 
-                            <select name="location_id" class="form-select search-select">
+                            <select name="location_id" class="form-select search-select" id="homeLocationSelect">
                                 <option value="">Semua Lokasi</option>
-                                @foreach($locations as $loc)
+                                @foreach($topLocations as $loc)
                                     <option value="{{ $loc->id }}" {{ request('location_id') == $loc->id ? 'selected' : '' }}>
                                         {{ $loc->name }}</option>
                                 @endforeach
@@ -50,7 +50,7 @@
             <div class="kamar-grid">
                 @forelse($featuredHomestays->take(6) as $homestay)
                     <div class="kamar-card card-item h-100 shadow-sm animate-on-scroll">
-                        <a class="card-link" href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}">
+                        <a class="card-link" href="{{ route('kamar.show', $homestay) }}">
                             <div class="kamar-image card-image">
                                 @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
                                     <img loading="lazy" src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}">
@@ -83,9 +83,9 @@
                         </a>
 
                         <div class="kamar-actions p-3 d-flex gap-2 justify-content-center">
-                            <a href="{{ route('kamar.show', ['id' => $homestay->id, 'slug' => $homestay->slug ?? '']) }}" class="btn btn-detail">Lihat Detail</a>
+                            <a href="{{ route('kamar.show', $homestay) }}" class="btn btn-detail">Lihat Detail</a>
                             @auth
-                                <a href="{{ route('booking.create', $homestay->id) }}" class="btn btn-pesan">Pesan</a>
+                                <a href="{{ route('booking.create', $homestay->slug) }}" class="btn btn-pesan">Pesan</a>
                             @endauth
                         </div>
                     </div>
@@ -123,7 +123,7 @@
 
                 <div class="cards-track" role="list">
                     @forelse($jogjaTopHomestays as $h)
-                        <a class="card-item" href="{{ route('kamar.show', ['id' => $h->id, 'slug' => $h->slug ?? '']) }}">
+                        <a class="card-item" href="{{ route('kamar.show', $h) }}">
                             <div class="card-image">
                                 @if(!empty($h->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($h->image_url))
                                     <img loading="lazy" src="{{ asset('storage/' . $h->image_url) }}" alt="{{ $h->name }}">
@@ -287,4 +287,21 @@
 
 @section('js')
     <script src="{{ asset('js/card-slider.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const locationSelect = document.getElementById('homeLocationSelect');
+            if (locationSelect) {
+                // Set size to force dropdown to show all options and open downward
+                locationSelect.addEventListener('mousedown', function(e) {
+                    this.size = Math.min(6, this.options.length);
+                });
+                locationSelect.addEventListener('change', function() {
+                    this.size = 0; // Reset to normal
+                });
+                locationSelect.addEventListener('blur', function() {
+                    this.size = 0; // Reset to normal
+                });
+            }
+        });
+    </script>
 @endsection

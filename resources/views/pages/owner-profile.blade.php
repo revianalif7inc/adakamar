@@ -132,7 +132,7 @@
                                             <i class="fa fa-eye"></i> Lihat Detail
                                         </a>
                                         @auth
-                                            <a href="{{ route('booking.create', $homestay->id) }}" 
+                                            <a href="{{ route('booking.create', $homestay->slug) }}" 
                                                class="btn btn-secondary">
                                                 <i class="fa fa-envelope"></i> Pesan
                                             </a>

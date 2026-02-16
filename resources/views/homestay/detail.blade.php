@@ -243,7 +243,7 @@
                                 @php $nearby = \App\Models\Homestay::where('location', $homestay->location)->where('id', '!=', $homestay->id)->limit(3)->get(); @endphp
                                 @foreach($nearby as $n)
                                     <li>
-                                        <a href="{{ route('kamar.show', ['id' => $n->id, 'slug' => $n->slug ?? '']) }}">
+                                        <a href="{{ route('kamar.show', $n->slug) }}">
                                             @if(!empty($n->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($n->image_url))
                                                 <img src="{{ asset('storage/' . $n->image_url) }}" alt="{{ $n->name }}">
                                             @else
@@ -342,7 +342,7 @@
                 }
 
                 // Redirect to booking create page with query params so user completes booking flow there
-                const base = '{{ route('booking.create', $homestay->id) }}';
+                const base = '{{ route('booking.create', $homestay->slug) }}';
                 const params = new URLSearchParams();
                 if (bookingDate && bookingDate.value) params.set('booking_date', bookingDate.value);
                 if (durationEl && durationEl.value) params.set('duration', durationEl.value);

@@ -15,7 +15,8 @@
             <h1>🏠 Pesan {{ $homestay->name }}</h1>
 
             <div class="booking-form-wrapper" data-price-month="{{ $homestay->price_per_month ?? '' }}"
-                data-price-year="{{ $homestay->price_per_year ?? '' }}" data-price-night="{{ $homestay->price_per_night ?? '' }}">
+                data-price-year="{{ $homestay->price_per_year ?? '' }}"
+                data-price-night="{{ $homestay->price_per_night ?? '' }}">
                 <div class="homestay-info">
                     @if(!empty($homestay->image_url) && \Illuminate\Support\Facades\Storage::disk('public')->exists($homestay->image_url))
                         <img src="{{ asset('storage/' . $homestay->image_url) }}" alt="{{ $homestay->name }}">
@@ -51,7 +52,8 @@
 
                     <div class="form-group">
                         <label for="booking_date">📅 Tanggal Pemesanan</label>
-                        <input type="date" id="booking_date" name="booking_date" value="{{ request()->query('booking_date') ?? old('booking_date') }}" required>
+                        <input type="date" id="booking_date" name="booking_date"
+                            value="{{ request()->query('booking_date') ?? old('booking_date') }}" required>
                         <small class="form-text text-muted">Cukup pilih tanggal pemesanan. Durasi dan harga akan ditentukan
                             oleh pemilik nanti.</small>
                     </div>
@@ -59,7 +61,8 @@
                     <div class="form-group">
                         <label for="duration">⏱️ Durasi</label>
                         <div class="duration-row">
-                            <input type="number" id="duration" name="duration" min="1" value="{{ request()->query('duration') ?? old('duration', 1) }}"
+                            <input type="number" id="duration" name="duration" min="1"
+                                value="{{ request()->query('duration') ?? old('duration', 1) }}"
                                 class="form-control duration-input" required>
                             <select id="duration_unit" name="duration_unit" class="form-control duration-unit">
                                 <option value="month" {{ (request()->query('duration_unit') ?? old('duration_unit')) === 'month' ? 'selected' : '' }}>Bulan</option>
@@ -79,7 +82,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="special_requests">💬 Permintaan Khusus (Opsional)</label>
+                        <label for="special_requests">💬 Catatan (Optional)</label>
                         <textarea id="special_requests" name="special_requests" rows="4"
                             placeholder="Tulis permintaan khusus Anda...">{{ old('special_requests') }}</textarea>
                     </div>
